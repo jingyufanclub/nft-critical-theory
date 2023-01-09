@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Grommet } from 'grommet'
+import { Route, Routes } from 'react-router-dom'
 
-function App() {
+import { AuthProvider, ErrorNotifier, RequireAuth } from 'components'
+import { Fallback, Home, Mint, Page } from 'views'
+
+import mintTheme from './mintTheme'
+
+function App(): JSX.Element {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Grommet full theme={mintTheme} themeMode="dark">
+      <ErrorNotifier>
+        <AuthProvider>
+          <Routes>
+            <Route index element={<Home />} />
+            <Route path="/" element={<Page />}>
+              <Route
+                path="mint"
+                element={
+                  <RequireAuth>
+                    <Mint />
+                  </RequireAuth>
+                }
+              />
+            </Route>
+            <Route path="*" element={<Fallback />} />
+          </Routes>
+        </AuthProvider>
+      </ErrorNotifier>
+    </Grommet>
+  )
 }
 
-export default App;
+export default App
