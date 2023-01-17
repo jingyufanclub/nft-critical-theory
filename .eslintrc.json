@@ -16,6 +16,7 @@
     "sourceType": "module"
   },
   "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
+  "ignorePatterns": ["config-overrides.js"],
   "rules": {
     "prettier/prettier": "warn",
     "sort-imports": [
