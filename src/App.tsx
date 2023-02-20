@@ -2,18 +2,26 @@ import { Grommet } from 'grommet'
 import { Route, Routes } from 'react-router-dom'
 
 import { AuthProvider, ErrorNotifier, RequireAuth } from 'components'
-import { Fallback, Home, Mint, Page } from 'views'
+import { Draw, Fallback, Home, Mint, Page } from 'views'
 
-import mintTheme from './mintTheme'
+import theme from './theme'
 
 function App(): JSX.Element {
   return (
-    <Grommet full theme={mintTheme} themeMode="dark">
+    <Grommet full theme={theme} themeMode="dark">
       <ErrorNotifier>
         <AuthProvider>
           <Routes>
             <Route index element={<Home />} />
             <Route path="/" element={<Page />}>
+              <Route
+                path="draw"
+                element={
+                  <RequireAuth>
+                    <Draw />
+                  </RequireAuth>
+                }
+              />
               <Route
                 path="mint"
                 element={
