@@ -12,13 +12,13 @@ function Home(): JSX.Element {
       <Page fill flex justify="center" pad="medium">
         <PageContent>
           <PageHeader title={en.signIn.welcome} />
-          <Button primary size="large" alignSelf="start" label={en.signIn.button} onClick={onSignIn} />
+          <Button size="large" alignSelf="start" label={en.signIn.button} onClick={onSignIn} />
         </PageContent>
       </Page>
     )
   }
 
-  return <Navigate to="/mint" replace={true} />
+  return <Navigate to="/draw" replace={true} />
 }
 
 export default Home

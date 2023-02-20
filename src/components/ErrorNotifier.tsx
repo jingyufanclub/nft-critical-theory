@@ -1,7 +1,7 @@
 import { Notification, StatusType } from 'grommet'
 import { createContext, useContext, useState } from 'react'
 
-import { en } from '../locales'
+import { en } from 'locales'
 
 type ErrorContextType = {
   showError: (message: string, status?: StatusType) => void

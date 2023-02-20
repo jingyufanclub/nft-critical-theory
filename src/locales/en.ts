@@ -1,10 +1,16 @@
 export default {
   signIn: {
-    welcome: 'Welcome to The US Mint',
-    button: 'Sign In',
+    welcome: 'NFT CRITICAL THEORY',
+    button: 'Enter',
   },
   error: {
-    generic: 'Something went wrong.',
-    fallback: 'Oops!',
+    generic: 'Something went wrong',
+    fallback: 'OOPS!',
+  },
+  draw: {
+    pageTitle: 'Language + the Materials Referred To',
+  },
+  mint: {
+    pageTitle: 'Mint',
   },
 }

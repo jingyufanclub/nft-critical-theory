@@ -1,21 +1,21 @@
 import { deepMerge } from 'grommet/utils'
 import { grommet } from 'grommet'
 
-const mintTheme = deepMerge(grommet, {
+const theme = deepMerge(grommet, {
   global: {
     colors: {
       brand: '#005BCC',
-      'accent-1': '#003D99',
+      'accent-1': '#186ADE',
       'accent-2': '#CC7100',
       'neutral-1': '#2E3439',
       'light-1': '#FAFAFA',
       'light-2': '#FAFAFA60',
-      text: '#141A1F',
+      text: 'accent-1',
       focus: 'accent-1',
     },
 
     font: {
-      family: 'Helvetica, sans-serif',
+      family: '"Goldman Sans", sans-serif',
     },
   },
   anchor: {
@@ -64,4 +64,4 @@ const mintTheme = deepMerge(grommet, {
   },
 })
 
-export default mintTheme
+export default theme
