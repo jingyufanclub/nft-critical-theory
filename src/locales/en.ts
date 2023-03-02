@@ -8,9 +8,18 @@ export default {
     fallback: 'OOPS!',
   },
   draw: {
-    pageTitle: 'Language + the Materials Referred To',
+    pageTitle: 'This is not a rug pull',
+    instructions: 'Enter your desired text one line at a time',
+    drawButton: 'Draw',
+    resetButton: 'Reset',
+    navigateButton: 'Go to next step',
   },
-  mint: {
-    pageTitle: 'Mint',
+  metadata: {
+    pageTitle: 'Edit metadata',
+    editName: 'Edit name',
+    editDescription: 'Edit description',
+  },
+  prepare: {
+    pageTitle: 'Prepare transaction',
   },
 }

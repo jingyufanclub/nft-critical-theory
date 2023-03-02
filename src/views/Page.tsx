@@ -3,7 +3,7 @@ import { Box, Main } from 'grommet'
 
 function Page(): JSX.Element {
   return (
-    <Box fill>
+    <Box fill flex justify="center" pad="medium">
       <Main flex align="start" justify="start" pad="medium">
         <Outlet />
       </Main>
