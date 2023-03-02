@@ -13,12 +13,17 @@
 @font-face {
   font-family: 'Goldman Sans';
   src: url('./assets/fonts/GoldmanSans_W_Bd.woff2') format('woff2');
-  font-weight: 600;
+  font-weight: 700;
   font-display: swap;
 }
 @font-face {
   font-family: 'Goldman Sans';
   src: url('./assets/fonts/GoldmanSans_W_Blk.woff2') format('woff2');
-  font-weight: 700;
+  font-weight: 900;
   font-display: swap;
+}
+
+pre.__json-pretty__ {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
