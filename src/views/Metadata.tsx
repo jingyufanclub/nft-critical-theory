@@ -1,4 +1,5 @@
 import JSONPretty from 'react-json-pretty'
+import { Blob, NFTStorage } from 'nft.storage'
 import { useNavigate } from 'react-router-dom'
 import { Box, Button, Image, Page, PageContent, PageHeader, TextArea, TextInput } from 'grommet'
 import { useEffect, useState } from 'react'
@@ -14,7 +15,7 @@ const defaultMetadata: TokenMetadata = {
   nftType: NFT_TYPE,
   name: '',
   description: '',
-  image: '',
+  image: new Blob(),
 }
 
 function Metadata(): JSX.Element {
@@ -23,6 +24,15 @@ function Metadata(): JSX.Element {
   const [metadata, setMetadata] = useState<TokenMetadata>(defaultMetadata)
 
   const metadataString = JSON.stringify(metadata)
+
+  // const nftStorageClient = new NFTStorage({
+  //   token,
+  // })
+
+  // async function handleUploadToStorage() {
+  //   const result = await nftStorageClient.store(metadata)
+  //   console.log(result.data, result.url)
+  // }
 
   function handleEditName(name: string): void {
     setMetadata({ ...metadata, name })
@@ -41,7 +51,7 @@ function Metadata(): JSX.Element {
     setMetadata({
       ...metadata,
       name: text,
-      image: svgData,
+      image: new Blob([svgData]),
     })
   }, [])
 

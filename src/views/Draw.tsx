@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { Box, Button, Page, PageContent, PageHeader, Text, TextInput } from 'grommet'
-import { Canvas, useStateContext } from 'components'
+import { useStateContext } from 'components'
+import { Box, Button, Image, Page, PageContent, PageHeader, Text, TextInput } from 'grommet'
 
 import { en } from 'locales'
 
@@ -17,7 +17,7 @@ function Draw(): JSX.Element {
   const [texts, setTexts] = useState<string[]>([])
   const [inputValue, setInputValue] = useState<string>('')
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 500 500"><style>.base { fill: ${fontFill}; font-family: 'sans-serif'; font-size: ${fontSize}px; font-weight: ${fontWeight}; }</style><rect width="100%" height="100%" fill="${bg}" />${generateText()}</svg>`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600"><style>.base { fill: ${fontFill}; font-family: 'sans-serif'; font-size: ${fontSize}px; font-weight: ${fontWeight}; }</style><rect width="100%" height="100%" fill="${bg}" />${generateText()}</svg>`
 
   const svgData = `data:image/svg+xml;base64, ${window.btoa(unescape(encodeURIComponent(svg)))}`
 
@@ -26,7 +26,7 @@ function Draw(): JSX.Element {
   function generateText(): string {
     const textElements: string[] = []
     const x = textAlign === 'center' ? '50%' : 40
-    let y = texts.length === 1 ? '50%' : 500 / (texts.length + 1) + texts.length * 25
+    let y = texts.length === 1 ? '50%' : 600 / (texts.length + 1) + texts.length * 24
     texts.forEach((t) => {
       textElements.push(`<text x="${x}" y="${y}" class="base" text-anchor="${textAnchor}" >${t}</text>`)
       if (typeof y === 'number') y += fontSize + 10
@@ -69,7 +69,7 @@ function Draw(): JSX.Element {
           </Box>
           <Box direction="column" gap="medium">
             <Box width="medium" border>
-              <Canvas svg={svg} />
+              <Image src={svgData} />
             </Box>
             <Box align="center">
               <Box width="small">

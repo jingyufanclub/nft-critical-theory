@@ -22,7 +22,7 @@ function Canvas({ svg }: CanvasProps) {
     }
   }, [svg])
 
-  return <canvas ref={canvasRef} width="1000" height="1000" />
+  return <canvas ref={canvasRef} width="600" height="600" />
 }
 
 export default Canvas

@@ -3,5 +3,5 @@ export interface TokenMetadata {
   nftType: string
   name: string
   description: string
-  image: string
+  image: Blob
 }
