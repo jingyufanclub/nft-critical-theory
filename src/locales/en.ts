@@ -18,8 +18,15 @@ export default {
     pageTitle: 'Edit metadata',
     editName: 'Edit name',
     editDescription: 'Edit description',
+    addApiKey: 'Add your nft.storage api key',
+    uploadMetadata: 'Upload metadata',
+    navigateButton: 'Go to next step',
   },
   prepare: {
     pageTitle: 'Prepare transaction',
+    walletSeed: 'Wallet seed',
+    flags: 'Flags',
+    transferFee: 'Transfer fee',
+    taxon: 'Taxon',
   },
 }

@@ -15,24 +15,14 @@ const defaultMetadata: TokenMetadata = {
   nftType: NFT_TYPE,
   name: '',
   description: '',
-  image: new Blob(),
+  image: '',
 }
 
 function Metadata(): JSX.Element {
   const navigate = useNavigate()
-  const { svgData, text, updateMetadata } = useStateContext()
+  const { svgData, text, metadataUri, updateMetadataUri } = useStateContext()
   const [metadata, setMetadata] = useState<TokenMetadata>(defaultMetadata)
-
-  const metadataString = JSON.stringify(metadata)
-
-  // const nftStorageClient = new NFTStorage({
-  //   token,
-  // })
-
-  // async function handleUploadToStorage() {
-  //   const result = await nftStorageClient.store(metadata)
-  //   console.log(result.data, result.url)
-  // }
+  const [nftStorageKey, setNftStorageKey] = useState<string>('')
 
   function handleEditName(name: string): void {
     setMetadata({ ...metadata, name })
@@ -42,8 +32,21 @@ function Metadata(): JSX.Element {
     setMetadata({ ...metadata, description })
   }
 
+  function handleAddKey(key: string): void {
+    setNftStorageKey(key)
+  }
+
+  async function handleUpload(): Promise<void> {
+    // const nftStorageClient = new NFTStorage({
+    //   token: nftStorageKey,
+    // })
+    // const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
+    // const cid = await nftStorageClient.storeBlob(blob)
+    // updateMetadataUri(`ipfs://${cid}`)
+    updateMetadataUri('ipfs://bafkreigxaqufht4forz2rr53rt7hnvxvjnrfitt5hgot5qhe3cisknmbve')
+  }
+
   function handleNavigate(): void {
-    updateMetadata(metadataString)
     navigate('/prepare')
   }
 
@@ -51,7 +54,7 @@ function Metadata(): JSX.Element {
     setMetadata({
       ...metadata,
       name: text,
-      image: new Blob([svgData]),
+      image: svgData,
     })
   }, [])
 
@@ -71,15 +74,20 @@ function Metadata(): JSX.Element {
               onChange={(event) => handleEditDescription(event.target.value)}
               placeholder={en.metadata.editDescription}
             />
+            <TextInput
+              value={nftStorageKey}
+              onChange={(event) => handleAddKey(event.target.value)}
+              placeholder={en.metadata.addApiKey}
+            />
             <Box align="center">
-              <Box width="small">
-                <Button label={en.draw.navigateButton} onClick={handleNavigate} />
-              </Box>
+              <Button label={en.metadata.uploadMetadata} onClick={handleUpload} disabled={!nftStorageKey} />
             </Box>
           </Box>
-          <Box width="medium">
+          <Box width="medium" gap="medium">
             <JSONPretty data={metadata} />
-            <Image src={svgData} />
+            <Box align="center">
+              <Button label={en.metadata.navigateButton} onClick={handleNavigate} disabled={!metadataUri} />
+            </Box>
           </Box>
         </Box>
       </PageContent>

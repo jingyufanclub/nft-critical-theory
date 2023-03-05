@@ -3,5 +3,12 @@ export interface TokenMetadata {
   nftType: string
   name: string
   description: string
-  image: Blob
+  image: string
+}
+
+export interface TransactionForm {
+  walletSeed: string
+  flags: number
+  transferFee: number
+  taxon: number
 }
