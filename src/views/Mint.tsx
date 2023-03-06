@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 import { useStateContext } from 'components'
 import { TokenMetadata, TransactionFields } from 'common/entities'
-import { getJSON, mintNft, validateSeed } from 'common/utils'
+import { formatDate, getJSON, mintNft, validateSeed } from 'common/utils'
 
 import { en } from 'locales'
 
@@ -130,7 +130,7 @@ function Mint(): JSX.Element {
                   {en.mint.txId} {txResponse.result.hash}
                 </Text>
                 <Text>
-                  {en.mint.txDate} {rippleTimeToISOTime(txResponse.result.date as number)}
+                  {en.mint.txDate} {formatDate(txResponse.result.date as number)}
                 </Text>
               </Box>
             )}

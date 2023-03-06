@@ -1,4 +1,12 @@
-import { AccountNFTsResponse, Client, Transaction, TxResponse, Wallet, convertStringToHex } from 'xrpl'
+import {
+  AccountNFTsResponse,
+  Client,
+  Transaction,
+  TxResponse,
+  Wallet,
+  convertStringToHex,
+  rippleTimeToISOTime,
+} from 'xrpl'
 
 import { TransactionFields } from 'common/entities'
 
@@ -12,6 +20,11 @@ export async function getJSON(url: string): Promise<any> {
 export function validateSeed(walletSeed: string): boolean {
   const regex = /^s[a-zA-Z0-9]{12,}$/
   return regex.test(walletSeed)
+}
+
+export function formatDate(date: number): string {
+  const iso = rippleTimeToISOTime(date)
+  return new Date(iso).toString()
 }
 
 export async function mintNft(
