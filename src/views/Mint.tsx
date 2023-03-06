@@ -3,10 +3,9 @@ import { Box, Button, Form, FormField, Image, Page, PageContent, PageHeader, Tex
 import { Client, TxResponse, Wallet, rippleTimeToISOTime } from 'xrpl'
 import { useEffect, useState } from 'react'
 
-import { Networks } from 'common/constants'
 import { useStateContext } from 'components'
 import { TokenMetadata, TransactionFields } from 'common/entities'
-import { getJSON, mintNft } from 'common/utils'
+import { getJSON, mintNft, validateSeed } from 'common/utils'
 
 import { en } from 'locales'
 
@@ -18,13 +17,12 @@ const defaultFields: TransactionFields = {
 }
 
 function Mint(): JSX.Element {
-  const { svgData, metadataCid } = useStateContext()
-  const [client] = useState<Client>(new Client(Networks.TESTNET))
+  const { metadataCid, network, svgData } = useStateContext()
+  const [client] = useState<Client>(new Client(network))
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
-
-  const wallet = txFields.walletSeed ? Wallet.fromSeed(txFields.walletSeed) : null
+  const [wallet, setWallet] = useState<Wallet | null>(null)
 
   async function connect() {
     await client.connect()
@@ -39,6 +37,17 @@ function Mint(): JSX.Element {
     }
   }
 
+  function getWallet(): void {
+    if (validateSeed(txFields.walletSeed)) {
+      try {
+        const wallet = Wallet.fromSeed(txFields.walletSeed)
+        setWallet(wallet)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
   async function handleMint() {
     if (wallet) {
       const metadataUri = `ipfs://${metadataCid}`
@@ -48,15 +57,21 @@ function Mint(): JSX.Element {
   }
 
   useEffect(() => {
+    getWallet()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [txFields.walletSeed])
+
+  useEffect(() => {
     connect()
     getMetadata()
     return () => {
       client.disconnect()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
-    <Page>
+    <Page height="100%">
       <PageContent>
         <PageHeader title={en.mint.pageTitle} />
         <Box direction="row" gap="xlarge" wrap>
@@ -66,7 +81,14 @@ function Mint(): JSX.Element {
               onChange={(nextValue) => setTxFields(nextValue)}
               onReset={() => setTxFields(defaultFields)}
             >
-              <FormField name="walletSeed" id="walletSeed" htmlFor="walletSeed" label={en.mint.walletSeed} required />
+              <FormField
+                name="walletSeed"
+                id="walletSeed"
+                htmlFor="walletSeed"
+                label={en.mint.walletSeed}
+                info={en.mint.walletSeedInfo}
+                required
+              />
               <FormField
                 name="flags"
                 id="flags"
@@ -92,7 +114,17 @@ function Mint(): JSX.Element {
                 required
               />
             </Form>
-            {txResponse ? (
+            <Box gap="medium">
+              <Button label="Mint" onClick={handleMint} disabled={!wallet || txResponse !== null} />
+            </Box>
+          </Box>
+          <Box width="medium">
+            {wallet && (
+              <Text>
+                {en.mint.walletAddress} {wallet.address}
+              </Text>
+            )}
+            {txResponse && (
               <Box>
                 <Text>
                   {en.mint.txId} {txResponse.result.hash}
@@ -101,16 +133,14 @@ function Mint(): JSX.Element {
                   {en.mint.txDate} {rippleTimeToISOTime(txResponse.result.date as number)}
                 </Text>
               </Box>
-            ) : (
-              <Button label="Mint" onClick={handleMint} disabled={!txFields.walletSeed} />
+            )}
+            {tokenMetadata && (
+              <Box>
+                <Image src={tokenMetadata.image} />
+                <JSONPretty data={tokenMetadata} />
+              </Box>
             )}
           </Box>
-          {tokenMetadata && (
-            <Box width="medium">
-              <Image src={tokenMetadata.image} />
-              <JSONPretty data={tokenMetadata} />
-            </Box>
-          )}
         </Box>
       </PageContent>
     </Page>

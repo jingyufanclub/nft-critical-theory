@@ -2,10 +2,16 @@ import { AccountNFTsResponse, Client, Transaction, TxResponse, Wallet, convertSt
 
 import { TransactionFields } from 'common/entities'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getJSON(url: string): Promise<any> {
   const response = await fetch(url)
-  if (!response.ok) throw new Error(response.statusText)
-  return response.json()
+  if (response.ok) return response.json()
+  throw new Error(response.statusText)
+}
+
+export function validateSeed(walletSeed: string): boolean {
+  const regex = /^s[a-zA-Z0-9]{12,}$/
+  return regex.test(walletSeed)
 }
 
 export async function mintNft(

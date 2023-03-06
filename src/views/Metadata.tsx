@@ -55,6 +55,7 @@ function Metadata(): JSX.Element {
       name: text,
       image: svgData,
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
