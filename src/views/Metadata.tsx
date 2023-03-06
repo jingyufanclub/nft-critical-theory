@@ -1,7 +1,7 @@
 import JSONPretty from 'react-json-pretty'
-import { Blob, NFTStorage } from 'nft.storage'
 import { useNavigate } from 'react-router-dom'
-import { Box, Button, Image, Page, PageContent, PageHeader, TextArea, TextInput } from 'grommet'
+import { Blob, NFTStorage } from 'nft.storage'
+import { Box, Button, Page, PageContent, PageHeader, TextArea, TextInput } from 'grommet'
 import { useEffect, useState } from 'react'
 
 import { TokenMetadata } from 'common/entities'
@@ -20,7 +20,7 @@ const defaultMetadata: TokenMetadata = {
 
 function Metadata(): JSX.Element {
   const navigate = useNavigate()
-  const { svgData, text, metadataUri, updateMetadataUri } = useStateContext()
+  const { svgData, text, metadataCid, updateMetadataCid } = useStateContext()
   const [metadata, setMetadata] = useState<TokenMetadata>(defaultMetadata)
   const [nftStorageKey, setNftStorageKey] = useState<string>('')
 
@@ -37,17 +37,16 @@ function Metadata(): JSX.Element {
   }
 
   async function handleUpload(): Promise<void> {
-    // const nftStorageClient = new NFTStorage({
-    //   token: nftStorageKey,
-    // })
-    // const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
-    // const cid = await nftStorageClient.storeBlob(blob)
-    // updateMetadataUri(`ipfs://${cid}`)
-    updateMetadataUri('ipfs://bafkreigxaqufht4forz2rr53rt7hnvxvjnrfitt5hgot5qhe3cisknmbve')
+    const nftStorageClient = new NFTStorage({
+      token: nftStorageKey,
+    })
+    const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
+    const cid = await nftStorageClient.storeBlob(blob)
+    updateMetadataCid(cid)
   }
 
   function handleNavigate(): void {
-    navigate('/prepare')
+    navigate('/mint')
   }
 
   useEffect(() => {
@@ -86,7 +85,7 @@ function Metadata(): JSX.Element {
           <Box width="medium" gap="medium">
             <JSONPretty data={metadata} />
             <Box align="center">
-              <Button label={en.metadata.navigateButton} onClick={handleNavigate} disabled={!metadataUri} />
+              <Button label={en.metadata.navigateButton} onClick={handleNavigate} disabled={!metadataCid} />
             </Box>
           </Box>
         </Box>

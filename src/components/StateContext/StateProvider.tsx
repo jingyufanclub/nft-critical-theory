@@ -1,19 +1,19 @@
 import { createContext, useContext, useState } from 'react'
 
 type StateContextType = {
-  metadataUri: string
+  metadataCid: string
   svgData: string
   text: string
-  updateMetadataUri: (value: string) => void
+  updateMetadataCid: (value: string) => void
   updateSvgData: (value: string) => void
   updateText: (value: string) => void
 }
 
 const defaultStateContext: StateContextType = {
-  metadataUri: '',
+  metadataCid: '',
   svgData: '',
   text: '',
-  updateMetadataUri: () => {},
+  updateMetadataCid: () => {},
   updateSvgData: () => {},
   updateText: () => {},
 }
@@ -21,12 +21,12 @@ const defaultStateContext: StateContextType = {
 const StateContext = createContext<StateContextType>(defaultStateContext)
 
 function StateProvider({ children }: { children: JSX.Element }) {
-  const [metadataUri, setMetadataUri] = useState<string>('')
+  const [metadataCid, setMetadataCid] = useState<string>('')
   const [svgData, setSvg] = useState<string>('')
   const [text, setText] = useState<string>('')
 
-  function updateMetadataUri(value: string): void {
-    setMetadataUri(value)
+  function updateMetadataCid(value: string): void {
+    setMetadataCid(value)
   }
 
   function updateSvgData(value: string): void {
@@ -38,10 +38,10 @@ function StateProvider({ children }: { children: JSX.Element }) {
   }
 
   const value = {
-    metadataUri,
+    metadataCid,
     svgData,
     text,
-    updateMetadataUri,
+    updateMetadataCid,
     updateSvgData,
     updateText,
   }

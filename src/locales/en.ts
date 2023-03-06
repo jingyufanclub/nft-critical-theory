@@ -22,11 +22,13 @@ export default {
     uploadMetadata: 'Upload metadata',
     navigateButton: 'Go to next step',
   },
-  prepare: {
-    pageTitle: 'Prepare transaction',
+  mint: {
+    pageTitle: 'Mint',
     walletSeed: 'Wallet seed',
-    flags: 'Flags',
-    transferFee: 'Transfer fee',
+    flags: 'Flags — 1 Burnable by issuer, 2 Only XRP, 8 Transferable ',
+    transferFee: 'Transfer fee in units of in units of 1/100,000',
     taxon: 'Taxon',
+    txId: 'NFTokenMint Transaction ID:',
+    txDate: 'NFTokenMint Transaction Date:',
   },
 }

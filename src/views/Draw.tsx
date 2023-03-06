@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useStateContext } from 'components'
-import { Box, Button, Image, Page, PageContent, PageHeader, Text, TextInput } from 'grommet'
+import { Box, Button, Page, PageContent, PageHeader, Text, TextInput } from 'grommet'
 
+import { Canvas } from 'components'
 import { en } from 'locales'
 
 function Draw(): JSX.Element {
@@ -22,7 +23,7 @@ function Draw(): JSX.Element {
   const svgData = `data:image/svg+xml;base64, ${window.btoa(unescape(encodeURIComponent(svg)))}`
 
   const text = texts.join(' ')
-  console.log(text)
+
   function generateText(): string {
     const textElements: string[] = []
     const x = textAlign === 'center' ? '50%' : 40
@@ -69,7 +70,7 @@ function Draw(): JSX.Element {
           </Box>
           <Box direction="column" gap="medium">
             <Box width="medium" border>
-              <Image src={svgData} />
+              <Canvas svg={svg} />
             </Box>
             <Box align="center">
               <Box width="small">

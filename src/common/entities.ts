@@ -6,7 +6,7 @@ export interface TokenMetadata {
   image: string
 }
 
-export interface TransactionForm {
+export interface TransactionFields {
   walletSeed: string
   flags: number
   transferFee: number
