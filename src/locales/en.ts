@@ -7,6 +7,12 @@ export default {
     generic: 'Something went wrong',
     fallback: 'OOPS!',
   },
+  header: {
+    menuLabel: 'Network',
+    devnet: 'DEVNET',
+    mainnet: 'MAINNET',
+    testnet: 'TESTNET',
+  },
   draw: {
     pageTitle: 'This is not a rug pull',
     instructions: 'Enter your desired text one line at a time',
@@ -25,10 +31,12 @@ export default {
   mint: {
     pageTitle: 'Mint',
     walletSeed: 'Wallet seed',
+    walletSeedInfo: 'Family seed starting with "s"',
+    walletAddress: 'Wallet address:',
     flags: 'Flags',
     flagsInfo: '1 Burnable by issuer, 2 Only XRP, 8 Transferable',
     transferFee: 'Transfer fee',
-    transferFeeInfo: 'In units of 1/100,000',
+    transferFeeInfo: 'Units of 1/100,000 up to 50000',
     taxon: 'Taxon',
     taxonInfo: 'Arbitrary number to identify a collection of related NFTs',
     txId: 'NFTokenMint Transaction ID:',

@@ -2,7 +2,7 @@ export const SCHEMA_STRING = 'ipfs://bafkreidtjf2ihiwtptiyadjfmesplo555iy2jdcwhf
 
 export const NFT_TYPE = 'art.v0'
 
-export enum Networks {
+export enum Network {
   DEVNET = 'wss://s.devnet.rippletest.net:51233/',
   TESTNET = 'wss://s.altnet.rippletest.net:51233/',
   MAINNET = 'wss://xrplcluster.com/',

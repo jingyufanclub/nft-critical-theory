@@ -1,10 +1,14 @@
 import { createContext, useContext, useState } from 'react'
 
+import { Network } from 'common/constants'
+
 type StateContextType = {
   metadataCid: string
   svgData: string
   text: string
+  network: Network
   updateMetadataCid: (value: string) => void
+  updateNetwork: (value: Network) => void
   updateSvgData: (value: string) => void
   updateText: (value: string) => void
 }
@@ -13,7 +17,9 @@ const defaultStateContext: StateContextType = {
   metadataCid: '',
   svgData: '',
   text: '',
+  network: Network.TESTNET,
   updateMetadataCid: () => {},
+  updateNetwork: () => {},
   updateSvgData: () => {},
   updateText: () => {},
 }
@@ -22,11 +28,16 @@ const StateContext = createContext<StateContextType>(defaultStateContext)
 
 function StateProvider({ children }: { children: JSX.Element }) {
   const [metadataCid, setMetadataCid] = useState<string>('')
+  const [network, setNetwork] = useState<Network>(Network.TESTNET)
   const [svgData, setSvg] = useState<string>('')
   const [text, setText] = useState<string>('')
 
   function updateMetadataCid(value: string): void {
     setMetadataCid(value)
+  }
+
+  function updateNetwork(value: Network): void {
+    setNetwork(value)
   }
 
   function updateSvgData(value: string): void {
@@ -39,9 +50,11 @@ function StateProvider({ children }: { children: JSX.Element }) {
 
   const value = {
     metadataCid,
+    network,
     svgData,
     text,
     updateMetadataCid,
+    updateNetwork,
     updateSvgData,
     updateText,
   }
