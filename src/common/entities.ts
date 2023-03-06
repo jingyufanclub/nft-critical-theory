@@ -5,3 +5,10 @@ export interface TokenMetadata {
   description: string
   image: string
 }
+
+export interface TransactionFields {
+  walletSeed: string
+  flags: number
+  transferFee: number
+  taxon: number
+}

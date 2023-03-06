@@ -1,6 +1,7 @@
 import JSONPretty from 'react-json-pretty'
 import { useNavigate } from 'react-router-dom'
-import { Box, Button, Image, Page, PageContent, PageHeader, TextArea, TextInput } from 'grommet'
+import { Blob, NFTStorage } from 'nft.storage'
+import { Box, Button, Page, PageContent, PageHeader, TextArea, TextInput } from 'grommet'
 import { useEffect, useState } from 'react'
 
 import { TokenMetadata } from 'common/entities'
@@ -19,10 +20,9 @@ const defaultMetadata: TokenMetadata = {
 
 function Metadata(): JSX.Element {
   const navigate = useNavigate()
-  const { svgData, text, updateMetadata } = useStateContext()
+  const { svgData, text, metadataCid, updateMetadataCid } = useStateContext()
   const [metadata, setMetadata] = useState<TokenMetadata>(defaultMetadata)
-
-  const metadataString = JSON.stringify(metadata)
+  const [nftStorageKey, setNftStorageKey] = useState<string>('')
 
   function handleEditName(name: string): void {
     setMetadata({ ...metadata, name })
@@ -32,9 +32,21 @@ function Metadata(): JSX.Element {
     setMetadata({ ...metadata, description })
   }
 
+  function handleAddKey(key: string): void {
+    setNftStorageKey(key)
+  }
+
+  async function handleUpload(): Promise<void> {
+    const nftStorageClient = new NFTStorage({
+      token: nftStorageKey,
+    })
+    const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
+    const cid = await nftStorageClient.storeBlob(blob)
+    updateMetadataCid(cid)
+  }
+
   function handleNavigate(): void {
-    updateMetadata(metadataString)
-    navigate('/prepare')
+    navigate('/mint')
   }
 
   useEffect(() => {
@@ -61,15 +73,20 @@ function Metadata(): JSX.Element {
               onChange={(event) => handleEditDescription(event.target.value)}
               placeholder={en.metadata.editDescription}
             />
+            <TextInput
+              value={nftStorageKey}
+              onChange={(event) => handleAddKey(event.target.value)}
+              placeholder={en.metadata.addApiKey}
+            />
             <Box align="center">
-              <Box width="small">
-                <Button label={en.draw.navigateButton} onClick={handleNavigate} />
-              </Box>
+              <Button label={en.metadata.uploadMetadata} onClick={handleUpload} disabled={!nftStorageKey} />
             </Box>
           </Box>
-          <Box width="medium">
+          <Box width="medium" gap="medium">
             <JSONPretty data={metadata} />
-            <Image src={svgData} />
+            <Box align="center">
+              <Button label={en.metadata.navigateButton} onClick={handleNavigate} disabled={!metadataCid} />
+            </Box>
           </Box>
         </Box>
       </PageContent>

@@ -18,8 +18,20 @@ export default {
     pageTitle: 'Edit metadata',
     editName: 'Edit name',
     editDescription: 'Edit description',
+    addApiKey: 'Add your nft.storage api key',
+    uploadMetadata: 'Upload metadata',
+    navigateButton: 'Go to next step',
   },
-  prepare: {
-    pageTitle: 'Prepare transaction',
+  mint: {
+    pageTitle: 'Mint',
+    walletSeed: 'Wallet seed',
+    flags: 'Flags',
+    flagsInfo: '1 Burnable by issuer, 2 Only XRP, 8 Transferable',
+    transferFee: 'Transfer fee',
+    transferFeeInfo: 'In units of 1/100,000',
+    taxon: 'Taxon',
+    taxonInfo: 'Arbitrary number to identify a collection of related NFTs',
+    txId: 'NFTokenMint Transaction ID:',
+    txDate: 'NFTokenMint Transaction Date:',
   },
 }

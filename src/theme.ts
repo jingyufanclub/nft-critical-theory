@@ -4,14 +4,15 @@ import { grommet } from 'grommet'
 const theme = deepMerge(grommet, {
   global: {
     colors: {
-      brand: '#005BCC',
-      'accent-1': '#186ADE',
-      'accent-2': '#CC7100',
+      brand: '#f6b6bb',
+      'accent-1': '#fef3f3',
+      'accent-2': '#e7c6c8',
       'neutral-1': '#2E3439',
       'light-1': '#FAFAFA',
       'light-2': '#FAFAFA60',
       text: 'accent-1',
       focus: 'accent-1',
+      border: 'accent-1',
     },
 
     font: {
@@ -27,8 +28,18 @@ const theme = deepMerge(grommet, {
       textDecoration: 'underline',
     },
   },
+  button: {},
+  formField: {
+    margin: {
+      bottom: 'medium',
+    },
+    info: {
+      color: 'accent-2',
+      size: 'small',
+    },
+  },
   heading: {
-    color: 'accent-1',
+    color: 'brand',
     level: {
       1: {
         font: {

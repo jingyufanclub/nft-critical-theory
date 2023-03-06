@@ -4,7 +4,7 @@ function Loading(): JSX.Element {
   return (
     <Layer full animation={false}>
       <Box fill align="center" justify="center">
-        <Spinner size="large" color="accent-1" />
+        <Spinner size="large" color="brand" />
       </Box>
     </Layer>
   )
