@@ -24,6 +24,8 @@ function Mint(): JSX.Element {
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
 
+  const wallet = txFields.walletSeed ? Wallet.fromSeed(txFields.walletSeed) : null
+
   async function connect() {
     await client.connect()
   }
@@ -38,7 +40,6 @@ function Mint(): JSX.Element {
   }
 
   async function handleMint() {
-    const wallet = txFields.walletSeed ? Wallet.fromSeed(txFields.walletSeed) : null
     if (wallet) {
       const metadataUri = `ipfs://${metadataCid}`
       const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
@@ -66,15 +67,30 @@ function Mint(): JSX.Element {
               onReset={() => setTxFields(defaultFields)}
             >
               <FormField name="walletSeed" id="walletSeed" htmlFor="walletSeed" label={en.mint.walletSeed} required />
-              <FormField name="flags" id="flags" htmlFor="flags" label={en.mint.flags} required />
+              <FormField
+                name="flags"
+                id="flags"
+                htmlFor="flags"
+                label={en.mint.flags}
+                info={en.mint.flagsInfo}
+                required
+              />
               <FormField
                 name="transferFee"
                 id="transferFee"
                 htmlFor="transferFee"
                 label={en.mint.transferFee}
+                info={en.mint.transferFeeInfo}
                 required
               />
-              <FormField name="taxon" id="taxon" htmlFor="taxon" label={en.mint.taxon} required />
+              <FormField
+                name="taxon"
+                id="taxon"
+                htmlFor="taxon"
+                label={en.mint.taxon}
+                info={en.mint.taxonInfo}
+                required
+              />
             </Form>
             {txResponse ? (
               <Box>

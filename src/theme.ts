@@ -30,8 +30,12 @@ const theme = deepMerge(grommet, {
   },
   button: {},
   formField: {
-    content: {
-      margin: 'xsmall',
+    margin: {
+      bottom: 'medium',
+    },
+    info: {
+      color: 'accent-2',
+      size: 'small',
     },
   },
   heading: {
