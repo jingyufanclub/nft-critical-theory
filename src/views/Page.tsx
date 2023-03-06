@@ -7,7 +7,13 @@ function Page(): JSX.Element {
   return (
     <Box fill flex justify="center">
       <AppHeader />
-      <Main flex align="start" justify="start" pad="large">
+      <Main
+        flex
+        align="start"
+        justify="start"
+        pad={{ vertical: 'small', horizontal: 'large' }}
+        margin={{ bottom: 'medium' }}
+      >
         <Outlet />
       </Main>
     </Box>

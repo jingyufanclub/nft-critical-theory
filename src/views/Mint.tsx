@@ -71,7 +71,7 @@ function Mint(): JSX.Element {
   }, [])
 
   return (
-    <Page>
+    <Page height="100%">
       <PageContent>
         <PageHeader title={en.mint.pageTitle} />
         <Box direction="row" gap="xlarge" wrap>
@@ -86,7 +86,7 @@ function Mint(): JSX.Element {
                 id="walletSeed"
                 htmlFor="walletSeed"
                 label={en.mint.walletSeed}
-                info={wallet ? `${en.mint.walletAddress} ${wallet.address}` : en.mint.walletSeedInfo}
+                info={en.mint.walletSeedInfo}
                 required
               />
               <FormField
@@ -114,7 +114,17 @@ function Mint(): JSX.Element {
                 required
               />
             </Form>
-            {txResponse ? (
+            <Box gap="medium">
+              <Button label="Mint" onClick={handleMint} disabled={!wallet || txResponse !== null} />
+            </Box>
+          </Box>
+          <Box width="medium">
+            {wallet && (
+              <Text>
+                {en.mint.walletAddress} {wallet.address}
+              </Text>
+            )}
+            {txResponse && (
               <Box>
                 <Text>
                   {en.mint.txId} {txResponse.result.hash}
@@ -123,16 +133,14 @@ function Mint(): JSX.Element {
                   {en.mint.txDate} {rippleTimeToISOTime(txResponse.result.date as number)}
                 </Text>
               </Box>
-            ) : (
-              <Button label="Mint" onClick={handleMint} disabled={!txFields.walletSeed} />
+            )}
+            {tokenMetadata && (
+              <Box>
+                <Image src={tokenMetadata.image} />
+                <JSONPretty data={tokenMetadata} />
+              </Box>
             )}
           </Box>
-          {tokenMetadata && (
-            <Box width="medium">
-              <Image src={tokenMetadata.image} />
-              <JSONPretty data={tokenMetadata} />
-            </Box>
-          )}
         </Box>
       </PageContent>
     </Page>

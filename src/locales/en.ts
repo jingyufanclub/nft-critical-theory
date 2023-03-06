@@ -32,7 +32,7 @@ export default {
     pageTitle: 'Mint',
     walletSeed: 'Wallet seed',
     walletSeedInfo: 'Family seed starting with "s"',
-    walletAddress: 'Wallet address:',
+    walletAddress: 'Wallet Address:',
     flags: 'Flags',
     flagsInfo: '1 Burnable by issuer, 2 Only XRP, 8 Transferable',
     transferFee: 'Transfer fee',
