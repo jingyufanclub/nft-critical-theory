@@ -2,7 +2,7 @@ export default {
   home: {
     pageTitle: 'This is not a rug pull',
     projectDescription:
-      'This is a project that uses blockchain technology and non-fungible tokens (NFTS) to represent intangible ideas such as emotions, experiences, and memories, in a way that can be bought, sold, and exchanged. This is a tool built on the XRP Ledger (XRPL) that gives the means of production and distribution of conceptual art to everyone.',
+      'This is a project that uses blockchain technology and non-fungible tokens (NFTS) to represent and bestow value to intangible ideas such as emotions, memories, and creative acts in a way that can be bought, sold, and exchanged. This is a tool built on the XRP Ledger (XRPL) that gives the means of production and distribution of conceptual art to everyone.',
     requirements: 'You will need:',
     xrplFaucet: 'XRPL credentials',
     nftStorage: 'nft.storage API key',
