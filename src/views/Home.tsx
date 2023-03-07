@@ -1,24 +1,28 @@
-import { Navigate } from 'react-router-dom'
-import { Button, Page, PageContent, PageHeader } from 'grommet'
+import { useNavigate } from 'react-router-dom'
+import { Button, Page, PageContent, PageHeader, Paragraph } from 'grommet'
+
+import { AnchorLink } from 'components'
 
 import { en } from 'locales'
-import { useAuthContext } from 'components/Auth/AuthProvider'
 
 function Home(): JSX.Element {
-  const { user, onSignIn } = useAuthContext()
-
-  if (!user) {
-    return (
-      <Page fill flex justify="center" pad="medium">
-        <PageContent>
-          <PageHeader title={en.signIn.welcome} />
-          <Button size="large" alignSelf="start" label={en.signIn.button} onClick={onSignIn} />
-        </PageContent>
-      </Page>
-    )
-  }
-
-  return <Navigate to="/draw" replace={true} />
+  const navigate = useNavigate()
+  return (
+    <Page fill flex justify="center" pad="medium">
+      <PageContent>
+        <PageHeader title={en.home.pageTitle} />
+        <Paragraph size="xlarge">{en.home.projectDescription}</Paragraph>
+        <Paragraph size="xlarge">
+          {en.home.requirements}
+          <br />
+          <AnchorLink to={en.home.xrplFaucetUrl} label={en.home.xrplFaucet} />
+          <br />
+          <AnchorLink to={en.home.nftStorageUrl} label={en.home.nftStorage} />
+        </Paragraph>
+        <Button size="large" alignSelf="start" label={en.home.button} onClick={() => navigate('/draw')} />
+      </PageContent>
+    </Page>
+  )
 }
 
 export default Home

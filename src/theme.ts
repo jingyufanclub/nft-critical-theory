@@ -21,7 +21,7 @@ const theme = deepMerge(grommet, {
     },
   },
   anchor: {
-    fontWeight: 600,
+    fontWeight: 400,
     textDecoration: 'none',
     color: 'brand',
     gap: 'small',

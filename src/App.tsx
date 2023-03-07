@@ -1,7 +1,7 @@
 import { Grommet } from 'grommet'
 import { Route, Routes } from 'react-router-dom'
 
-import { Draw, Fallback, Metadata, Mint, Page } from 'views'
+import { Draw, Fallback, Home, Metadata, Mint, Page } from 'views'
 import { ErrorNotifier, StateProvider } from 'components'
 
 import theme from './theme'
@@ -12,8 +12,9 @@ function App(): JSX.Element {
       <ErrorNotifier>
         <StateProvider>
           <Routes>
+            <Route index element={<Home />} />
             <Route path="/" element={<Page />}>
-              <Route index element={<Draw />} />
+              <Route path="draw" element={<Draw />} />
               <Route path="metadata" element={<Metadata />} />
               <Route path="mint" element={<Mint />} />
             </Route>
