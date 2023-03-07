@@ -1,7 +1,14 @@
 export default {
-  signIn: {
-    welcome: 'NFT CRITICAL THEORY',
-    button: 'Enter',
+  home: {
+    pageTitle: 'This is not a rug pull',
+    projectDescription:
+      'This is a project that uses blockchain technology and non-fungible tokens (NFTS) to represent and bestow value to intangible ideas such as emotions, memories, and creative acts in a way that can be bought, sold, and exchanged. This is a tool built on the XRP Ledger (XRPL) that gives the means of production and distribution of conceptual art to everyone.',
+    requirements: 'You will need:',
+    xrplFaucet: 'XRPL credentials',
+    nftStorage: 'nft.storage API key',
+    xrplFaucetUrl: 'https://xrpl.org/xrp-testnet-faucet.html',
+    nftStorageUrl: 'https://nft.storage/',
+    button: 'Start',
   },
   error: {
     generic: 'Something went wrong',
@@ -14,7 +21,7 @@ export default {
     testnet: 'TESTNET',
   },
   draw: {
-    pageTitle: 'This is not a rug pull',
+    pageTitle: 'Create',
     instructions: 'Enter your desired text one line at a time',
     drawButton: 'Draw',
     resetButton: 'Reset',
