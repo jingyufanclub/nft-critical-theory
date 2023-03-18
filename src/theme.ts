@@ -74,6 +74,11 @@ const theme = deepMerge(grommet, {
       },
     },
   },
+  layer: {
+    overlay: {
+      background: 'rgba(0, 0, 0, 0.1)',
+    },
+  },
 })
 
 export default theme

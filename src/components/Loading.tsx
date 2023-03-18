@@ -1,10 +1,10 @@
 import { Box, Layer, Spinner } from 'grommet'
 
-function Loading(): JSX.Element {
+function Loading() {
   return (
-    <Layer full animation={false}>
+    <Layer full animation="fadeIn" background={{ color: 'black', opacity: 'medium' }}>
       <Box fill align="center" justify="center">
-        <Spinner size="large" color="brand" />
+        <Spinner color="brand" size="small" />
       </Box>
     </Layer>
   )

@@ -1,9 +1,9 @@
 import JSONPretty from 'react-json-pretty'
 import { Box, Button, Form, FormField, Image, Page, PageContent, PageHeader, Text } from 'grommet'
-import { Client, TxResponse, Wallet } from 'xrpl'
+import { TxResponse, Wallet } from 'xrpl'
 import { useEffect, useState } from 'react'
 
-import { useStateContext } from 'components'
+import { Loading, useStateContext } from 'components'
 import { TokenMetadata, TransactionFields } from 'common/entities'
 import { formatDate, getJSON, mintNft, validateSeed } from 'common/utils'
 
@@ -17,12 +17,12 @@ const defaultFields: TransactionFields = {
 }
 
 function Mint(): JSX.Element {
-  const { metadataCid, network, svgData } = useStateContext()
-  const [client] = useState<Client>(new Client(network))
+  const { client, metadataCid, svgData } = useStateContext()
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
   const [wallet, setWallet] = useState<Wallet | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
   async function connect() {
     await client.connect()
@@ -50,6 +50,7 @@ function Mint(): JSX.Element {
 
   async function handleMint() {
     if (wallet) {
+      setLoading(true)
       const metadataUri = `ipfs://${metadataCid}`
       const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
       setTxResponse(response)
@@ -62,11 +63,21 @@ function Mint(): JSX.Element {
   }, [txFields.walletSeed])
 
   useEffect(() => {
+    if (txResponse) {
+      setLoading(false)
+    }
+  }, [txResponse])
+
+  useEffect(() => {
     connect()
-    getMetadata()
     return () => {
       client.disconnect()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [client])
+
+  useEffect(() => {
+    getMetadata()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -115,7 +126,7 @@ function Mint(): JSX.Element {
               />
             </Form>
             <Box gap="medium">
-              <Button label="Mint" onClick={handleMint} disabled={!wallet || txResponse !== null} />
+              <Button label="Mint" onClick={handleMint} disabled={!wallet || !!txResponse} />
             </Box>
           </Box>
           <Box width="medium">
@@ -143,6 +154,7 @@ function Mint(): JSX.Element {
           </Box>
         </Box>
       </PageContent>
+      {loading && <Loading />}
     </Page>
   )
 }

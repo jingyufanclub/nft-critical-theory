@@ -5,7 +5,7 @@ import { Box, Button, Page, PageContent, PageHeader, TextArea, TextInput } from 
 import { useEffect, useState } from 'react'
 
 import { TokenMetadata } from 'common/entities'
-import { useStateContext } from 'components'
+import { Loading, useStateContext } from 'components'
 import { NFT_TYPE, SCHEMA_STRING } from 'common/constants'
 
 import { en } from 'locales'
@@ -23,6 +23,7 @@ function Metadata(): JSX.Element {
   const { svgData, text, metadataCid, updateMetadataCid } = useStateContext()
   const [metadata, setMetadata] = useState<TokenMetadata>(defaultMetadata)
   const [nftStorageKey, setNftStorageKey] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
 
   function handleEditName(name: string): void {
     setMetadata({ ...metadata, name })
@@ -37,6 +38,7 @@ function Metadata(): JSX.Element {
   }
 
   async function handleUpload(): Promise<void> {
+    setLoading(true)
     const nftStorageClient = new NFTStorage({
       token: nftStorageKey,
     })
@@ -48,6 +50,12 @@ function Metadata(): JSX.Element {
   function handleNavigate(): void {
     navigate('/mint')
   }
+
+  useEffect(() => {
+    if (metadataCid) {
+      setLoading(false)
+    }
+  }, [metadataCid])
 
   useEffect(() => {
     setMetadata({
@@ -80,7 +88,11 @@ function Metadata(): JSX.Element {
               placeholder={en.metadata.addApiKey}
             />
             <Box align="center">
-              <Button label={en.metadata.uploadMetadata} onClick={handleUpload} disabled={!nftStorageKey} />
+              <Button
+                label={en.metadata.uploadMetadata}
+                onClick={handleUpload}
+                disabled={!nftStorageKey || !!metadataCid}
+              />
             </Box>
           </Box>
           <Box width="medium" gap="medium">
@@ -91,6 +103,7 @@ function Metadata(): JSX.Element {
           </Box>
         </Box>
       </PageContent>
+      {loading && <Loading />}
     </Page>
   )
 }

@@ -1,8 +1,10 @@
-import { createContext, useContext, useState } from 'react'
+import { Client } from 'xrpl'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 import { Network } from 'common/constants'
 
 type StateContextType = {
+  client: Client
   metadataCid: string
   svgData: string
   text: string
@@ -14,6 +16,7 @@ type StateContextType = {
 }
 
 const defaultStateContext: StateContextType = {
+  client: new Client(Network.TESTNET),
   metadataCid: '',
   svgData: '',
   text: '',
@@ -31,6 +34,7 @@ function StateProvider({ children }: { children: JSX.Element }) {
   const [network, setNetwork] = useState<Network>(Network.TESTNET)
   const [svgData, setSvg] = useState<string>('')
   const [text, setText] = useState<string>('')
+  const [client, setClient] = useState<Client>(new Client(Network.TESTNET))
 
   function updateMetadataCid(value: string): void {
     setMetadataCid(value)
@@ -49,6 +53,7 @@ function StateProvider({ children }: { children: JSX.Element }) {
   }
 
   const value = {
+    client,
     metadataCid,
     network,
     svgData,
@@ -58,6 +63,10 @@ function StateProvider({ children }: { children: JSX.Element }) {
     updateSvgData,
     updateText,
   }
+
+  useEffect(() => {
+    setClient(new Client(network))
+  }, [network])
 
   return <StateContext.Provider value={value}>{children}</StateContext.Provider>
 }
