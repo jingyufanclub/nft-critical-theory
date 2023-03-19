@@ -4,6 +4,11 @@ export interface TokenMetadata {
   name: string
   description: string
   image: string
+  collection?: Collection
+}
+
+export interface Collection {
+  name: string
 }
 
 export interface TransactionFields {

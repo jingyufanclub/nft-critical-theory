@@ -82,7 +82,7 @@ function Mint(): JSX.Element {
       <PageContent>
         <PageHeader title={en.mint.pageTitle} />
         <Box direction="row" gap="xlarge" wrap>
-          <Box width="medium" gap="medium">
+          <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
             <Form
               value={txFields}
               onChange={(nextValue) => setTxFields(nextValue)}
@@ -125,7 +125,7 @@ function Mint(): JSX.Element {
               <Button label="Mint" onClick={handleMint} disabled={!wallet || !!txResponse} />
             </Box>
           </Box>
-          <Box width="medium">
+          <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
             {wallet && (
               <Text>
                 {en.mint.walletAddress} {wallet.address}
@@ -143,7 +143,9 @@ function Mint(): JSX.Element {
             )}
             {tokenMetadata && (
               <Box>
-                <Image src={tokenMetadata.image} />
+                <Box border>
+                  <Image src={tokenMetadata.image} />
+                </Box>
                 <JSONPretty data={tokenMetadata} />
               </Box>
             )}
