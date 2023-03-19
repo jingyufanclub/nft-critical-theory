@@ -1,6 +1,6 @@
 import { Box, Layer, Spinner } from 'grommet'
 
-function Loading() {
+function Loading(): JSX.Element {
   return (
     <Layer full animation="fadeIn" background={{ color: 'black', opacity: 'medium' }}>
       <Box fill align="center" justify="center">

@@ -59,12 +59,6 @@ function Metadata(): JSX.Element {
   }
 
   useEffect(() => {
-    if (metadataCid) {
-      setLoading(false)
-    }
-  }, [metadataCid])
-
-  useEffect(() => {
     setMetadata({
       ...metadata,
       name: text,
