@@ -3,7 +3,7 @@ import { Box, Button, Form, FormField, Image, Page, PageContent, PageHeader, Tex
 import { Client, TxResponse, Wallet } from 'xrpl'
 import { useEffect, useState } from 'react'
 
-import { useStateContext } from 'components'
+import { Loading, useStateContext } from 'components'
 import { TokenMetadata, TransactionFields } from 'common/entities'
 import { formatDate, getJSON, mintNft, validateSeed } from 'common/utils'
 
@@ -18,17 +18,14 @@ const defaultFields: TransactionFields = {
 
 function Mint(): JSX.Element {
   const { metadataCid, network, svgData } = useStateContext()
-  const [client] = useState<Client>(new Client(network))
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
+  const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
-  async function connect() {
-    await client.connect()
-  }
-
-  async function getMetadata() {
+  async function getMetadata(): Promise<void> {
     try {
       const metadata = await getJSON(`https://${metadataCid}.ipfs.nftstorage.link`)
       setTokenMetadata(metadata)
@@ -48,13 +45,27 @@ function Mint(): JSX.Element {
     }
   }
 
-  async function handleMint() {
+  async function handleMint(): Promise<void> {
+    setLoading(true)
+    await client.connect()
     if (wallet) {
-      const metadataUri = `ipfs://${metadataCid}`
-      const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
-      setTxResponse(response)
+      try {
+        const metadataUri = `ipfs://${metadataCid}`
+        const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
+        setTxResponse(response)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        window.alert(error.message)
+      } finally {
+        setLoading(false)
+      }
     }
+    client.disconnect()
   }
+
+  useEffect(() => {
+    setClient(new Client(network))
+  }, [network])
 
   useEffect(() => {
     getWallet()
@@ -62,11 +73,7 @@ function Mint(): JSX.Element {
   }, [txFields.walletSeed])
 
   useEffect(() => {
-    connect()
     getMetadata()
-    return () => {
-      client.disconnect()
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -115,7 +122,7 @@ function Mint(): JSX.Element {
               />
             </Form>
             <Box gap="medium">
-              <Button label="Mint" onClick={handleMint} disabled={!wallet || txResponse !== null} />
+              <Button label="Mint" onClick={handleMint} disabled={!wallet || !!txResponse} />
             </Box>
           </Box>
           <Box width="medium">
@@ -143,6 +150,7 @@ function Mint(): JSX.Element {
           </Box>
         </Box>
       </PageContent>
+      {loading && <Loading />}
     </Page>
   )
 }

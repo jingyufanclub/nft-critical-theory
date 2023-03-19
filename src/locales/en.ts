@@ -14,12 +14,6 @@ export default {
     generic: 'Something went wrong',
     fallback: 'OOPS!',
   },
-  header: {
-    menuLabel: 'Network',
-    devnet: 'DEVNET',
-    mainnet: 'MAINNET',
-    testnet: 'TESTNET',
-  },
   draw: {
     pageTitle: 'Create',
     instructions: 'Enter your desired text one line at a time',

@@ -1,27 +1,12 @@
-import { Header, Menu, Text } from 'grommet'
+import { useContext } from 'react'
+import { Box, Header, ResponsiveContext, Select, Text } from 'grommet'
 
 import { Network } from 'common/constants'
 import { useStateContext } from 'components'
 
-import { en } from 'locales'
-
 function AppHeader(): JSX.Element {
+  const size = useContext(ResponsiveContext)
   const { network, updateNetwork } = useStateContext()
-
-  const menuItems = [
-    {
-      label: en.header.devnet,
-      onClick: () => updateNetwork(Network.DEVNET),
-    },
-    {
-      label: en.header.mainnet,
-      onClick: () => updateNetwork(Network.MAINNET),
-    },
-    {
-      label: en.header.testnet,
-      onClick: () => updateNetwork(Network.TESTNET),
-    },
-  ]
 
   return (
     <Header
@@ -29,9 +14,21 @@ function AppHeader(): JSX.Element {
       pad={{ horizontal: 'large', vertical: 'small' }}
       justify="between"
     >
-      <Text weight="bold">{Object.keys(Network)[Object.values(Network).indexOf(network)]}</Text>
-      <Text weight="bold">{network}</Text>
-      <Menu label={en.header.menuLabel} items={menuItems} />
+      {size !== 'small' && (
+        <Box>
+          <Text weight="bold">{network}</Text>
+        </Box>
+      )}
+      <Box width="small">
+        <Select
+          id="network"
+          name="network"
+          plain
+          value={Object.keys(Network)[Object.values(Network).indexOf(network)]}
+          options={Object.keys(Network)}
+          onChange={({ option }) => updateNetwork(Network[option as keyof typeof Network])}
+        />
+      </Box>
     </Header>
   )
 }
