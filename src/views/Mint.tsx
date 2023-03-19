@@ -53,6 +53,7 @@ function Mint(): JSX.Element {
         const metadataUri = `ipfs://${metadataCid}`
         const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
         setTxResponse(response)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         window.alert(error.message)
       } finally {

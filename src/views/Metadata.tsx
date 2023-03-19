@@ -46,6 +46,7 @@ function Metadata(): JSX.Element {
       const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
       const cid = await nftStorageClient.storeBlob(blob)
       updateMetadataCid(cid)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       window.alert(error.message)
     } finally {
