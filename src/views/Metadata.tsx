@@ -39,12 +39,18 @@ function Metadata(): JSX.Element {
 
   async function handleUpload(): Promise<void> {
     setLoading(true)
-    const nftStorageClient = new NFTStorage({
-      token: nftStorageKey,
-    })
-    const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
-    const cid = await nftStorageClient.storeBlob(blob)
-    updateMetadataCid(cid)
+    try {
+      const nftStorageClient = new NFTStorage({
+        token: nftStorageKey,
+      })
+      const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
+      const cid = await nftStorageClient.storeBlob(blob)
+      updateMetadataCid(cid)
+    } catch (error: any) {
+      window.alert(error.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   function handleNavigate(): void {

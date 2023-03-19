@@ -1,6 +1,6 @@
 import JSONPretty from 'react-json-pretty'
 import { Box, Button, Form, FormField, Image, Page, PageContent, PageHeader, Text } from 'grommet'
-import { TxResponse, Wallet } from 'xrpl'
+import { Client, TxResponse, Wallet } from 'xrpl'
 import { useEffect, useState } from 'react'
 
 import { Loading, useStateContext } from 'components'
@@ -17,18 +17,15 @@ const defaultFields: TransactionFields = {
 }
 
 function Mint(): JSX.Element {
-  const { client, metadataCid, svgData } = useStateContext()
+  const { metadataCid, network, svgData } = useStateContext()
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
+  const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
 
-  async function connect() {
-    await client.connect()
-  }
-
-  async function getMetadata() {
+  async function getMetadata(): Promise<void> {
     try {
       const metadata = await getJSON(`https://${metadataCid}.ipfs.nftstorage.link`)
       setTokenMetadata(metadata)
@@ -48,33 +45,31 @@ function Mint(): JSX.Element {
     }
   }
 
-  async function handleMint() {
+  async function handleMint(): Promise<void> {
+    setLoading(true)
+    await client.connect()
     if (wallet) {
-      setLoading(true)
-      const metadataUri = `ipfs://${metadataCid}`
-      const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
-      setTxResponse(response)
+      try {
+        const metadataUri = `ipfs://${metadataCid}`
+        const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
+        setTxResponse(response)
+      } catch (error: any) {
+        window.alert(error.message)
+      } finally {
+        setLoading(false)
+      }
     }
+    client.disconnect()
   }
+
+  useEffect(() => {
+    setClient(new Client(network))
+  }, [network])
 
   useEffect(() => {
     getWallet()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [txFields.walletSeed])
-
-  useEffect(() => {
-    if (txResponse) {
-      setLoading(false)
-    }
-  }, [txResponse])
-
-  useEffect(() => {
-    connect()
-    return () => {
-      client.disconnect()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [client])
 
   useEffect(() => {
     getMetadata()
