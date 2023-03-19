@@ -1,4 +1,4 @@
-export const SCHEMA_STRING = 'ipfs://bafkreidtjf2ihiwtptiyadjfmesplo555iy2jdcwhfr6hkenr2z3fvxn2y'
+export const SCHEMA_STRING = 'ipfs://QmNpi8rcXEkohca8iXu7zysKKSJYqCvBJn3xJwga8jXqWU'
 
 export const NFT_TYPE = 'art.v0'
 

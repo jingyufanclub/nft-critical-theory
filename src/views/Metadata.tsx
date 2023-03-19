@@ -2,6 +2,7 @@ import JSONPretty from 'react-json-pretty'
 import { useNavigate } from 'react-router-dom'
 import { Blob, NFTStorage } from 'nft.storage'
 import { Box, Button, Page, PageContent, PageHeader, TextArea, TextInput } from 'grommet'
+import { Hide, View } from 'grommet-icons'
 import { useEffect, useState } from 'react'
 
 import { TokenMetadata } from 'common/entities'
@@ -23,6 +24,7 @@ function Metadata(): JSX.Element {
   const { svgData, text, metadataCid, updateMetadataCid } = useStateContext()
   const [metadata, setMetadata] = useState<TokenMetadata>(defaultMetadata)
   const [nftStorageKey, setNftStorageKey] = useState<string>('')
+  const [reveal, setReveal] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
   function handleEditName(name: string): void {
@@ -33,7 +35,15 @@ function Metadata(): JSX.Element {
     setMetadata({ ...metadata, description })
   }
 
-  function handleAddKey(key: string): void {
+  function handleAddCollection(name: string): void {
+    if (name) {
+      setMetadata({ ...metadata, collection: { name } })
+    } else {
+      setMetadata({ ...metadata, collection: undefined })
+    }
+  }
+
+  function handleApiKey(key: string): void {
     setNftStorageKey(key)
   }
 
@@ -72,7 +82,7 @@ function Metadata(): JSX.Element {
       <PageContent>
         <PageHeader title={en.metadata.pageTitle} />
         <Box direction="row" gap="xlarge" wrap>
-          <Box width="medium" gap="medium">
+          <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
             <TextInput
               value={metadata.name}
               onChange={(event) => handleEditName(event.target.value)}
@@ -84,10 +94,24 @@ function Metadata(): JSX.Element {
               placeholder={en.metadata.editDescription}
             />
             <TextInput
-              value={nftStorageKey}
-              onChange={(event) => handleAddKey(event.target.value)}
-              placeholder={en.metadata.addApiKey}
+              value={metadata.collection?.name || ''}
+              onChange={(event) => handleAddCollection(event.target.value)}
+              placeholder={en.metadata.addCollection}
             />
+            <Box width="medium" direction="row" gap="small" align="center" round="4px">
+              <TextInput
+                value={nftStorageKey}
+                onChange={(event) => handleApiKey(event.target.value)}
+                placeholder={en.metadata.addApiKey}
+                type={reveal ? 'text' : 'password'}
+              />
+              <Button
+                plain
+                a11yTitle={reveal ? en.metadata.hideKey : en.metadata.revealKey}
+                icon={reveal ? <Hide /> : <View />}
+                onClick={() => setReveal(!reveal)}
+              />
+            </Box>
             <Box align="center">
               <Button
                 label={en.metadata.uploadMetadata}
@@ -96,7 +120,7 @@ function Metadata(): JSX.Element {
               />
             </Box>
           </Box>
-          <Box width="medium" gap="medium">
+          <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
             <JSONPretty data={metadata} />
             <Box align="center">
               <Button label={en.metadata.navigateButton} onClick={handleNavigate} disabled={!metadataCid} />

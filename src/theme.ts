@@ -15,7 +15,6 @@ const theme = deepMerge(grommet, {
       focus: 'accent-1',
       border: 'accent-1',
     },
-
     font: {
       family: '"Goldman Sans", sans-serif',
     },
