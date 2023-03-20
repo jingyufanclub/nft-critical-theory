@@ -1,5 +1,5 @@
 import JSONPretty from 'react-json-pretty'
-import { Box, Button, Form, FormField, Image, Page, PageContent, PageHeader, Text } from 'grommet'
+import { Box, Button, Form, FormField, Image, Page, PageHeader, Text } from 'grommet'
 import { Client, TxResponse, Wallet } from 'xrpl'
 import { useEffect, useState } from 'react'
 
@@ -78,80 +78,79 @@ function Mint(): JSX.Element {
   }, [])
 
   return (
-    <Page height="100%">
-      <PageContent>
-        <PageHeader title={en.mint.pageTitle} />
-        <Box direction="row" gap="xlarge" wrap>
-          <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
-            <Form
-              value={txFields}
-              onChange={(nextValue) => setTxFields(nextValue)}
-              onReset={() => setTxFields(defaultFields)}
-            >
-              <FormField
-                name="walletSeed"
-                id="walletSeed"
-                htmlFor="walletSeed"
-                label={en.mint.walletSeed}
-                info={en.mint.walletSeedInfo}
-                required
-              />
-              <FormField
-                name="flags"
-                id="flags"
-                htmlFor="flags"
-                label={en.mint.flags}
-                info={en.mint.flagsInfo}
-                required
-              />
-              <FormField
-                name="transferFee"
-                id="transferFee"
-                htmlFor="transferFee"
-                label={en.mint.transferFee}
-                info={en.mint.transferFeeInfo}
-                required
-              />
-              <FormField
-                name="taxon"
-                id="taxon"
-                htmlFor="taxon"
-                label={en.mint.taxon}
-                info={en.mint.taxonInfo}
-                required
-              />
-            </Form>
-            <Box gap="medium">
-              <Button label="Mint" onClick={handleMint} disabled={!wallet || !!txResponse} />
-            </Box>
-          </Box>
-          <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
-            {wallet && (
-              <Text>
-                {en.mint.walletAddress} {wallet.address}
-              </Text>
-            )}
-            {txResponse && (
-              <Box>
-                <Text>
-                  {en.mint.txId} {txResponse.result.hash}
-                </Text>
-                <Text>
-                  {en.mint.txDate} {formatDate(txResponse.result.date as number)}
-                </Text>
-              </Box>
-            )}
-            {tokenMetadata && (
-              <Box>
-                <Box border>
-                  <Image src={tokenMetadata.image} />
-                </Box>
-                <JSONPretty data={tokenMetadata} />
-              </Box>
-            )}
+    <Page>
+      <PageHeader title={en.mint.pageTitle} />
+      <Box direction="row" gap="xlarge" wrap>
+        <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
+          <Form
+            value={txFields}
+            onChange={(nextValue) => setTxFields(nextValue)}
+            onReset={() => setTxFields(defaultFields)}
+          >
+            <FormField
+              name="walletSeed"
+              id="walletSeed"
+              htmlFor="walletSeed"
+              label={en.mint.walletSeed}
+              info={en.mint.walletSeedInfo}
+              required
+            />
+            <FormField
+              name="flags"
+              id="flags"
+              htmlFor="flags"
+              label={en.mint.flags}
+              info={en.mint.flagsInfo}
+              required
+            />
+            <FormField
+              name="transferFee"
+              id="transferFee"
+              htmlFor="transferFee"
+              label={en.mint.transferFee}
+              info={en.mint.transferFeeInfo}
+              required
+            />
+            <FormField
+              name="taxon"
+              id="taxon"
+              htmlFor="taxon"
+              label={en.mint.taxon}
+              info={en.mint.taxonInfo}
+              required
+            />
+          </Form>
+          <Box gap="medium">
+            <Button label="Mint" onClick={handleMint} disabled={!wallet || !!txResponse} />
           </Box>
         </Box>
-      </PageContent>
+        <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
+          {wallet && (
+            <Text>
+              {en.mint.walletAddress} {wallet.address}
+            </Text>
+          )}
+          {txResponse && (
+            <Box>
+              <Text>
+                {en.mint.txId} {txResponse.result.hash}
+              </Text>
+              <Text>
+                {en.mint.txDate} {formatDate(txResponse.result.date as number)}
+              </Text>
+            </Box>
+          )}
+          {tokenMetadata && (
+            <Box>
+              <Box border>
+                <Image src={tokenMetadata.image} />
+              </Box>
+              <JSONPretty data={tokenMetadata} />
+            </Box>
+          )}
+        </Box>
+      </Box>
+
       {loading && <Loading />}
     </Page>
   )

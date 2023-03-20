@@ -8,7 +8,7 @@ import theme from './theme'
 
 function App(): JSX.Element {
   return (
-    <Grommet full theme={theme} themeMode="dark">
+    <Grommet theme={theme} themeMode="dark">
       <ErrorNotifier>
         <StateProvider>
           <Routes>

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useStateContext } from 'components'
-import { Box, Button, Page, PageContent, PageHeader, Text, TextInput } from 'grommet'
+import { Box, Button, Page, PageHeader, Text, TextInput } from 'grommet'
 
 import { Canvas } from 'components'
 import { en } from 'locales'
@@ -53,33 +53,31 @@ function Draw(): JSX.Element {
 
   return (
     <Page>
-      <PageContent>
-        <PageHeader title={en.draw.pageTitle} />
-        <Box direction="row" gap="xlarge" wrap>
-          <Box width="medium" pad="small" gap="medium" margin={{ bottom: 'large' }}>
-            <Text>{en.draw.instructions}</Text>
-            <TextInput value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
-            <Box direction="row" gap="medium">
-              <Box flex>
-                <Button label={en.draw.drawButton} onClick={handleDraw} size="medium" />
-              </Box>
-              <Box flex>
-                <Button label={en.draw.resetButton} onClick={handleReset} />
-              </Box>
+      <PageHeader title={en.draw.pageTitle} />
+      <Box direction="row" gap="xlarge" wrap>
+        <Box width="medium" pad="small" gap="medium" margin={{ bottom: 'large' }}>
+          <Text>{en.draw.instructions}</Text>
+          <TextInput value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
+          <Box direction="row" gap="medium">
+            <Box flex>
+              <Button label={en.draw.drawButton} onClick={handleDraw} size="medium" />
             </Box>
-          </Box>
-          <Box direction="column" gap="medium">
-            <Box width="medium" border>
-              <Canvas svg={svg} />
-            </Box>
-            <Box align="center">
-              <Box width="small">
-                <Button label={en.draw.navigateButton} onClick={handleNavigate} disabled={!texts.length} />
-              </Box>
+            <Box flex>
+              <Button label={en.draw.resetButton} onClick={handleReset} />
             </Box>
           </Box>
         </Box>
-      </PageContent>
+        <Box direction="column" gap="medium">
+          <Box width="medium" border>
+            <Canvas svg={svg} />
+          </Box>
+          <Box align="center">
+            <Box width="small">
+              <Button label={en.draw.navigateButton} onClick={handleNavigate} disabled={!texts.length} />
+            </Box>
+          </Box>
+        </Box>
+      </Box>
     </Page>
   )
 }

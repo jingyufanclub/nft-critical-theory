@@ -1,7 +1,7 @@
 import JSONPretty from 'react-json-pretty'
 import { useNavigate } from 'react-router-dom'
 import { Blob, NFTStorage } from 'nft.storage'
-import { Box, Button, Page, PageContent, PageHeader, TextArea, TextInput } from 'grommet'
+import { Box, Button, Page, PageHeader, TextArea, TextInput } from 'grommet'
 import { Hide, View } from 'grommet-icons'
 import { useEffect, useState } from 'react'
 
@@ -79,55 +79,53 @@ function Metadata(): JSX.Element {
 
   return (
     <Page>
-      <PageContent>
-        <PageHeader title={en.metadata.pageTitle} />
-        <Box direction="row" gap="xlarge" wrap>
-          <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
+      <PageHeader title={en.metadata.pageTitle} />
+      <Box direction="row" gap="xlarge" wrap>
+        <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
+          <TextInput
+            value={metadata.name}
+            onChange={(event) => handleEditName(event.target.value)}
+            placeholder={en.metadata.editName}
+          />
+          <TextArea
+            value={metadata.description}
+            onChange={(event) => handleEditDescription(event.target.value)}
+            placeholder={en.metadata.editDescription}
+          />
+          <TextInput
+            value={metadata.collection?.name || ''}
+            onChange={(event) => handleAddCollection(event.target.value)}
+            placeholder={en.metadata.addCollection}
+          />
+          <Box width="medium" direction="row" gap="small" align="center" round="4px">
             <TextInput
-              value={metadata.name}
-              onChange={(event) => handleEditName(event.target.value)}
-              placeholder={en.metadata.editName}
+              value={nftStorageKey}
+              onChange={(event) => handleApiKey(event.target.value)}
+              placeholder={en.metadata.addApiKey}
+              type={reveal ? 'text' : 'password'}
             />
-            <TextArea
-              value={metadata.description}
-              onChange={(event) => handleEditDescription(event.target.value)}
-              placeholder={en.metadata.editDescription}
+            <Button
+              plain
+              a11yTitle={reveal ? en.metadata.hideKey : en.metadata.revealKey}
+              icon={reveal ? <Hide /> : <View />}
+              onClick={() => setReveal(!reveal)}
             />
-            <TextInput
-              value={metadata.collection?.name || ''}
-              onChange={(event) => handleAddCollection(event.target.value)}
-              placeholder={en.metadata.addCollection}
-            />
-            <Box width="medium" direction="row" gap="small" align="center" round="4px">
-              <TextInput
-                value={nftStorageKey}
-                onChange={(event) => handleApiKey(event.target.value)}
-                placeholder={en.metadata.addApiKey}
-                type={reveal ? 'text' : 'password'}
-              />
-              <Button
-                plain
-                a11yTitle={reveal ? en.metadata.hideKey : en.metadata.revealKey}
-                icon={reveal ? <Hide /> : <View />}
-                onClick={() => setReveal(!reveal)}
-              />
-            </Box>
-            <Box align="center">
-              <Button
-                label={en.metadata.uploadMetadata}
-                onClick={handleUpload}
-                disabled={!nftStorageKey || !!metadataCid}
-              />
-            </Box>
           </Box>
-          <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
-            <JSONPretty data={metadata} />
-            <Box align="center">
-              <Button label={en.metadata.navigateButton} onClick={handleNavigate} disabled={!metadataCid} />
-            </Box>
+          <Box align="center">
+            <Button
+              label={en.metadata.uploadMetadata}
+              onClick={handleUpload}
+              disabled={!nftStorageKey || !!metadataCid}
+            />
           </Box>
         </Box>
-      </PageContent>
+        <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
+          <JSONPretty data={metadata} />
+          <Box align="center">
+            <Button label={en.metadata.navigateButton} onClick={handleNavigate} disabled={!metadataCid} />
+          </Box>
+        </Box>
+      </Box>
       {loading && <Loading />}
     </Page>
   )
