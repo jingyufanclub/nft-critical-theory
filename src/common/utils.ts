@@ -8,6 +8,7 @@ import {
   rippleTimeToISOTime,
 } from 'xrpl'
 
+import { MINT_BY_MEMO } from './constants'
 import { TransactionFields } from 'common/entities'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,6 +43,11 @@ export async function mintNft(
     TransferFee: Number(txFields.transferFee),
     NFTokenTaxon: Number(txFields.taxon),
     Memos: [
+      {
+        Memo: {
+          MemoData: convertStringToHex(MINT_BY_MEMO),
+        },
+      },
       {
         Memo: {
           MemoData: convertStringToHex(svgData),
