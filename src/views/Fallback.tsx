@@ -1,14 +1,12 @@
-import { Page, PageContent, PageHeader } from 'grommet'
+import { Box, Heading } from 'grommet'
 
 import { en } from 'locales'
 
 function Fallback(): JSX.Element {
   return (
-    <Page fill flex align="center" justify="center" pad="medium">
-      <PageContent>
-        <PageHeader title={en.error.fallback} />
-      </PageContent>
-    </Page>
+    <Box height="100dvh" align="center" justify="center">
+      <Heading>{en.error.fallback}</Heading>
+    </Box>
   )
 }
 

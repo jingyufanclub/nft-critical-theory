@@ -1,14 +1,13 @@
 import { Outlet } from 'react-router-dom'
 import { Box, Main } from 'grommet'
 
-import { AppHeader } from 'components'
+import { AppFooter, AppHeader } from 'components'
 
 function Page(): JSX.Element {
   return (
-    <Box fill flex justify="center">
+    <Box justify="center">
       <AppHeader />
       <Main
-        flex
         align="start"
         justify="start"
         pad={{ vertical: 'small', horizontal: 'large' }}
@@ -16,6 +15,7 @@ function Page(): JSX.Element {
       >
         <Outlet />
       </Main>
+      <AppFooter />
     </Box>
   )
 }

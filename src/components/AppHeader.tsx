@@ -14,12 +14,8 @@ function AppHeader(): JSX.Element {
       pad={{ horizontal: 'large', vertical: 'small' }}
       justify="between"
     >
-      {size !== 'small' && (
-        <Box>
-          <Text weight="bold">{network}</Text>
-        </Box>
-      )}
-      <Box width="small">
+      <Box>{size !== 'small' && <Text weight="bold">{network}</Text>}</Box>
+      <Box width={size === 'small' ? '140px' : 'small'}>
         <Select
           id="network"
           name="network"
