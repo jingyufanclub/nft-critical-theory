@@ -2,6 +2,8 @@ export const SCHEMA_STRING = 'ipfs://QmNpi8rcXEkohca8iXu7zysKKSJYqCvBJn3xJwga8jX
 
 export const NFT_TYPE = 'art.v0'
 
+export const MINT_BY_MEMO = 'NFTokenMint by not-a-rug-pull.xyz'
+
 export enum Network {
   DEVNET = 'wss://s.devnet.rippletest.net:51233/',
   TESTNET = 'wss://s.altnet.rippletest.net:51233/',
