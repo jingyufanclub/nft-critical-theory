@@ -3,6 +3,7 @@ import { Box, Header, ResponsiveContext, Select, Text } from 'grommet'
 
 import { Network } from 'common/constants'
 import { useStateContext } from 'components'
+import { en } from 'locales'
 
 function AppHeader(): JSX.Element {
   const size = useContext(ResponsiveContext)
@@ -19,6 +20,7 @@ function AppHeader(): JSX.Element {
         <Select
           id="network"
           name="network"
+          a11yTitle={en.header.selectNetwork}
           plain
           value={Object.keys(Network)[Object.values(Network).indexOf(network)]}
           options={Object.keys(Network)}

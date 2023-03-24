@@ -1,4 +1,7 @@
 export default {
+  header: {
+    selectNetwork: 'Select network',
+  },
   home: {
     pageTitle: 'This is not a rug pull',
     projectDescription:
@@ -17,6 +20,7 @@ export default {
   draw: {
     pageTitle: 'Create',
     instructions: 'Enter your desired text one line at a time',
+    textInput: 'Enter desired text',
     drawButton: 'Draw',
     resetButton: 'Reset',
     navigateButton: 'Go to next step',
@@ -45,5 +49,6 @@ export default {
     taxonInfo: 'Arbitrary number to identify a collection of related NFTs',
     txId: 'NFTokenMint Transaction ID',
     txDate: 'NFTokenMint Transaction Date',
+    nftId: 'NFTokenID',
   },
 }

@@ -1,6 +1,6 @@
 import JSONPretty from 'react-json-pretty'
 import { Box, Button, Form, FormField, Image, Page, PageHeader, Text } from 'grommet'
-import { Client, TxResponse, Wallet } from 'xrpl'
+import { Client, TxResponse, Wallet, getNFTokenID } from 'xrpl'
 import { useEffect, useState } from 'react'
 
 import { Loading, useStateContext } from 'components'
@@ -24,6 +24,7 @@ function Mint(): JSX.Element {
   const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [nftId, setNftId] = useState<string | undefined>(undefined)
 
   async function getMetadata(): Promise<void> {
     try {
@@ -52,6 +53,9 @@ function Mint(): JSX.Element {
       try {
         const metadataUri = `ipfs://${metadataCid}`
         const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
+        if (response.result.meta && typeof response.result.meta !== 'string') {
+          setNftId(getNFTokenID(response.result.meta))
+        }
         setTxResponse(response)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
@@ -121,7 +125,7 @@ function Mint(): JSX.Element {
             />
           </Form>
           <Box gap="medium">
-            <Button label="Mint" onClick={handleMint} disabled={!wallet || !!txResponse} />
+            <Button label="Mint" onClick={handleMint} disabled={!wallet || Boolean(txResponse)} />
           </Box>
         </Box>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
@@ -137,6 +141,9 @@ function Mint(): JSX.Element {
               </Text>
               <Text>
                 {en.mint.txDate} {formatDate(txResponse.result.date as number)}
+              </Text>
+              <Text>
+                {en.mint.nftId} {nftId}
               </Text>
             </Box>
           )}

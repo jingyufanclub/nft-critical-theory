@@ -115,7 +115,7 @@ function Metadata(): JSX.Element {
             <Button
               label={en.metadata.uploadMetadata}
               onClick={handleUpload}
-              disabled={!nftStorageKey || !!metadataCid}
+              disabled={!nftStorageKey || Boolean(metadataCid)}
             />
           </Box>
         </Box>
