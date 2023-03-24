@@ -2,8 +2,8 @@ import { useContext } from 'react'
 import { Box, Header, ResponsiveContext, Select, Text } from 'grommet'
 
 import { Network } from 'common/constants'
-import { useStateContext } from 'components'
 import { en } from 'locales'
+import { useStateContext } from 'components'
 
 function AppHeader(): JSX.Element {
   const size = useContext(ResponsiveContext)
