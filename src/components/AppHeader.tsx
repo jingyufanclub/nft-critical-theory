@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { Box, Header, ResponsiveContext, Select, Text } from 'grommet'
 
 import { Network } from 'common/constants'
+import { en } from 'locales'
 import { useStateContext } from 'components'
 
 function AppHeader(): JSX.Element {
@@ -19,6 +20,7 @@ function AppHeader(): JSX.Element {
         <Select
           id="network"
           name="network"
+          a11yTitle={en.header.selectNetwork}
           plain
           value={Object.keys(Network)[Object.values(Network).indexOf(network)]}
           options={Object.keys(Network)}
