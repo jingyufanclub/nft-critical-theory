@@ -1,12 +1,14 @@
 import { createContext, useContext, useState } from 'react'
 
 import { Network } from 'common/constants'
+import { XummPkce } from 'xumm-oauth2-pkce'
 
 type StateContextType = {
   metadataCid: string
   svgData: string
   text: string
   network: Network
+  xummState: XummPkce | undefined
   updateMetadataCid: (value: string) => void
   updateNetwork: (value: Network) => void
   updateSvgData: (value: string) => void
@@ -18,6 +20,7 @@ const defaultStateContext: StateContextType = {
   svgData: '',
   text: '',
   network: Network.TESTNET,
+  xummState: undefined,
   updateMetadataCid: () => {},
   updateNetwork: () => {},
   updateSvgData: () => {},
@@ -31,6 +34,7 @@ function StateProvider({ children }: { children: JSX.Element }) {
   const [network, setNetwork] = useState<Network>(Network.TESTNET)
   const [svgData, setSvg] = useState<string>('')
   const [text, setText] = useState<string>('')
+  const [xummState, setXummState] = useState<XummPkce>()
 
   function updateMetadataCid(value: string): void {
     setMetadataCid(value)
@@ -48,15 +52,21 @@ function StateProvider({ children }: { children: JSX.Element }) {
     setText(value)
   }
 
+  function updateXummState(value: XummPkce): void {
+    setXummState(value)
+  }
+
   const value = {
     metadataCid,
     network,
     svgData,
     text,
+    xummState,
     updateMetadataCid,
     updateNetwork,
     updateSvgData,
     updateText,
+    updateXummState,
   }
 
   return <StateContext.Provider value={value}>{children}</StateContext.Provider>

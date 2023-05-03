@@ -45,5 +45,6 @@ export default {
     taxonInfo: 'Arbitrary number to identify a collection of related NFTs',
     txId: 'NFTokenMint Transaction ID',
     txDate: 'NFTokenMint Transaction Date',
+    success: 'Success!',
   },
 }
