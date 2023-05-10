@@ -12,7 +12,7 @@ import { XummPkce } from 'xumm-oauth2-pkce'
 
 import { MINT_BY_MEMO } from './constants'
 import { TransactionFields } from 'common/entities'
-import { XummJsonTransaction } from 'xumm-sdk/dist/src/types'
+import { PayloadAndSubscription, XummJsonTransaction } from 'xumm-sdk/dist/src/types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getJSON(url: string): Promise<any> {
@@ -74,8 +74,7 @@ export async function mintXummNft(
   metadataUri: string,
   svgData: string,
   xumm: XummPkce
-): Promise<null> {
-
+): Promise<boolean> {
   const state = await xumm.state()
   const sdk = state?.sdk
 
@@ -99,7 +98,7 @@ export async function mintXummNft(
     ]
   }
 
-  const xummResponse = await sdk?.payload.createAndSubscribe(request, event => {
+  const xummResponse = await sdk?.payload.createAndSubscribe(request, (event) => {
     console.log('New payload event: ', event.data)
 
     if (event.data.signed === true) {
@@ -122,12 +121,15 @@ export async function mintXummNft(
 
   if (resolveMint?.signed === false) {
     console.log('The sign request was rejected :(')
+    return false
   }
 
   if (resolveMint?.signed === true) {
     console.log('Woohoo! The sign request was signed :)')
-  } 
-  return null
+    return true
+  }
+
+  return false
 }
 
 export async function getNfts(client: Client, wallet: Wallet): Promise<AccountNFTsResponse> {

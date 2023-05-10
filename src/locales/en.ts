@@ -46,5 +46,6 @@ export default {
     txId: 'NFTokenMint Transaction ID',
     txDate: 'NFTokenMint Transaction Date',
     success: 'Success!',
+    xummSuccess: 'You minted successfully on Xumm!',
   },
 }

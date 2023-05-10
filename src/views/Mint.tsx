@@ -9,8 +9,6 @@ import { formatDate, getJSON, mintNft, mintXummNft, validateSeed } from 'common/
 
 import { en } from 'locales'
 
-import { XummPkce } from 'xumm-oauth2-pkce'
-
 const defaultFields: TransactionFields = {
   walletSeed: '',
   flags: 11,
@@ -19,15 +17,14 @@ const defaultFields: TransactionFields = {
 }
 
 function Mint(): JSX.Element {
-  const { metadataCid, network, svgData } = useStateContext()
+  const { metadataCid, network, svgData, xumm, isXummConnected, updateIsXummConnected } = useStateContext()
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
+  const [xummMintSuccessful, setXummMintSuccessful] = useState<boolean>(false)
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
   const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const xumm = new XummPkce('c6f8ad59-180f-47c1-8c87-2eaf9b8cca26')
-  const [isConnected, setIsConnected] = useState(false)
 
 
   async function getMetadata(): Promise<void> {
@@ -71,11 +68,11 @@ function Mint(): JSX.Element {
   async function handleXummMint(): Promise<void> {
     setLoading(true)
     await client.connect()
-    if (isConnected) {
+    if (isXummConnected) {
       try {
         const metadataUri = `ipfs://${metadataCid}`
         const xummResponse = await mintXummNft(txFields, client, metadataUri, svgData, xumm)
-        //setTxResponse(xummResponse)
+        setXummMintSuccessful(xummResponse)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         window.alert(error.message)
@@ -85,54 +82,6 @@ function Mint(): JSX.Element {
     }
     client.disconnect()
   }
-
-  async function signIntoXUMM(): Promise<void> {
-    try {
-      xumm.authorize()
-    } catch (error: any) {
-      console.log('Error message: ', error.message)
-      window.alert(error.message)
-    }
-  }
-
-
-
-  async function signOutXUMM(): Promise<void> {
-    console.log('log out clicked!')
-    xumm.logout()
-    setIsConnected(false)
-    //    setXumm(null)
-    //console.log('Your isConnected variable is ', isConnected)
-  }
-
-  // xumm.on('logout', async () => {
-  //   console.log('logout event CAUGHT')
-  //   const state = await xumm.state()
-  //   console.log('state after logout is', state)
-  //   setXumm(null)
-  // })
-
-  useEffect(() => {
-    xumm.on('success', async () => {
-      console.log('success detected')
-
-      const state = await xumm.state()
-      const sdk = state?.sdk
-      console.log('state is', state)
-      console.log('sdk is ', sdk)
-      setIsConnected(true)
-    })
-
-    console.log('xumm.on set up once')
-
-    return () => {
-      xumm.off('success', async () => {
-        console.log('Using xumm.off to turn off xumm.on from useEffect')
-      })
-    }
-  }, [])
-
-
 
   useEffect(() => {
     setClient(new Client(network))
@@ -193,10 +142,11 @@ function Mint(): JSX.Element {
           </Form>
           <Box gap="medium">
             <Button label="Mint" onClick={handleMint} disabled={!wallet || !!txResponse} />
-
-            <Button label="Connect XUMM" onClick={signIntoXUMM} />
-            <Button label="Logout" onClick={signOutXUMM} disabled={!isConnected} />
-            <Button label="Mint With Xumm" onClick={handleXummMint} disabled={!isConnected || !!txResponse} />
+            <Button
+              label="Mint With Xumm"
+              onClick={handleXummMint}
+              disabled={!isXummConnected || !!txResponse || xummMintSuccessful}
+            />
           </Box>
         </Box>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
@@ -219,6 +169,11 @@ function Mint(): JSX.Element {
           {txResponse && (
             <Box gap="medium">
               <Button label="Make another NFT!" />
+            </Box>
+          )}
+          {xummMintSuccessful && (
+            <Box>
+              <Text>{en.mint.xummSuccess}</Text>
             </Box>
           )}
           {tokenMetadata && (
