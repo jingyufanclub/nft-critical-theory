@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 
 import { Network } from 'common/constants'
 import { useStateContext } from 'components'
+import { XummTypes } from 'xumm-sdk'
+import { XrplError } from 'xrpl'
 
 function AppHeader(): JSX.Element {
   const size = useContext(ResponsiveContext)
@@ -13,9 +15,11 @@ function AppHeader(): JSX.Element {
   async function signIntoXUMM(): Promise<void> {
     try {
       xumm.authorize()
-    } catch (error: any) {
-      console.log('Error message: ', error.message)
-      window.alert(error.message)
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log('Error message: ', error.message)
+        window.alert(error.message)
+      }
     }
   }
 
@@ -25,7 +29,7 @@ function AppHeader(): JSX.Element {
     updateIsXummConnected(false)
   }
 
-  useEffect( () => {
+  useEffect(() => {
     xumm.on('success', async () => {
       console.log('success detected')
       updateIsXummConnected(true)
