@@ -12,7 +12,7 @@ import { XummPkce } from 'xumm-oauth2-pkce'
 
 import { MINT_BY_MEMO } from './constants'
 import { TransactionFields } from 'common/entities'
-import { PayloadAndSubscription, XummJsonTransaction, XummPayload } from 'xumm-sdk/dist/src/types'
+import { XummJsonTransaction } from 'xumm-sdk/dist/src/types'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getJSON(url: string): Promise<any> {
@@ -59,7 +59,7 @@ export async function mintNft(
     ],
   })
 
-  console.log("transaction object is ", transaction)
+  console.log('transaction object is ', transaction)
 
   const signedTx = wallet.sign(transaction)
 
@@ -95,7 +95,7 @@ export async function mintXummNft(
           MemoData: convertStringToHex(svgData),
         },
       },
-    ]
+    ],
   }
 
   const xummResponse = await sdk?.payload.createAndSubscribe(request, (event) => {
@@ -111,7 +111,7 @@ export async function mintXummNft(
       return false
     }
   })
-  
+
   console.log(xummResponse?.created)
   console.log('Returned tx from xumm: ', xummResponse)
 
@@ -128,7 +128,6 @@ export async function mintXummNft(
     console.log('Woohoo! The sign request was signed :)')
     return true
   }
-
 
   return false
 }

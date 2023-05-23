@@ -17,7 +17,7 @@ const defaultFields: TransactionFields = {
 }
 
 function Mint(): JSX.Element {
-  const { metadataCid, network, svgData, xumm, isXummConnected, updateIsXummConnected } = useStateContext()
+  const { metadataCid, network, svgData, xumm, isXummConnected } = useStateContext()
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [xummMintSuccessful, setXummMintSuccessful] = useState<boolean>(false)
@@ -25,7 +25,6 @@ function Mint(): JSX.Element {
   const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-
 
   async function getMetadata(): Promise<void> {
     try {
