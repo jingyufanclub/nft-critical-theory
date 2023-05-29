@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 import { Loading, useStateContext } from 'components'
 import { TokenMetadata, TransactionFields } from 'common/entities'
-import { formatDate, getJSON, mintNft, mintXummNft, validateSeed } from 'common/utils'
+import { formatDate, getJSON, mintNft, mintXummNft, validateSeed, XummTxResponse } from 'common/utils'
 
 import { en } from 'locales'
 
@@ -20,7 +20,7 @@ function Mint(): JSX.Element {
   const { metadataCid, network, svgData, xumm, isXummConnected } = useStateContext()
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
-  const [xummMintSuccessful, setXummMintSuccessful] = useState<boolean>(false)
+  const [xummTxResponse, setXummTxResponse] = useState<XummTxResponse>()
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
   const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
@@ -49,35 +49,23 @@ function Mint(): JSX.Element {
   async function handleMint(): Promise<void> {
     setLoading(true)
     await client.connect()
-    if (wallet) {
-      try {
-        const metadataUri = `ipfs://${metadataCid}`
-        const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
-        setTxResponse(response)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        window.alert(error.message)
-      } finally {
-        setLoading(false)
+    const metadataUri = `ipfs://${metadataCid}`
+    try {
+      if (isXummConnected) {
+        const xummResponse = await mintXummNft(txFields, metadataUri, svgData, xumm)
+        return setXummTxResponse(xummResponse)
       }
-    }
-    client.disconnect()
-  }
 
-  async function handleXummMint(): Promise<void> {
-    setLoading(true)
-    await client.connect()
-    if (isXummConnected) {
-      try {
-        const metadataUri = `ipfs://${metadataCid}`
-        const xummResponse = await mintXummNft(txFields, client, metadataUri, svgData, xumm)
-        setXummMintSuccessful(xummResponse)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      } catch (error: any) {
-        window.alert(error.message)
-      } finally {
-        setLoading(false)
+      if (wallet) {
+        const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
+        return setTxResponse(response)
       }
+    } catch (error) {
+      if (error instanceof Error) {
+        window.alert(error.message)
+      }
+    } finally {
+      setLoading(false)
     }
     client.disconnect()
   }
@@ -106,14 +94,16 @@ function Mint(): JSX.Element {
             onChange={(nextValue) => setTxFields(nextValue)}
             onReset={() => setTxFields(defaultFields)}
           >
-            <FormField
-              name="walletSeed"
-              id="walletSeed"
-              htmlFor="walletSeed"
-              label={en.mint.walletSeed}
-              info={en.mint.walletSeedInfo}
-              required
-            />
+            {!isXummConnected && (
+              <FormField
+                name="walletSeed"
+                id="walletSeed"
+                htmlFor="walletSeed"
+                label={en.mint.walletSeed}
+                info={en.mint.walletSeedInfo}
+                required
+              />
+            )}
             <FormField
               name="flags"
               id="flags"
@@ -140,12 +130,7 @@ function Mint(): JSX.Element {
             />
           </Form>
           <Box gap="medium">
-            <Button label="Mint" onClick={handleMint} disabled={!wallet || !!txResponse} />
-            <Button
-              label="Mint With Xumm"
-              onClick={handleXummMint}
-              disabled={!isXummConnected || !!txResponse || xummMintSuccessful}
-            />
+            <Button label="Mint" onClick={handleMint} />
           </Box>
         </Box>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
@@ -170,9 +155,16 @@ function Mint(): JSX.Element {
               <Button label="Make another NFT!" />
             </Box>
           )}
-          {xummMintSuccessful && (
+          {xummTxResponse?.success ? (
             <Box>
               <Text>{en.mint.xummSuccess}</Text>
+              <Text>
+                {en.mint.txId}: {xummTxResponse.message}
+              </Text>
+            </Box>
+          ) : (
+            <Box>
+              <Text>{xummTxResponse?.message}</Text>
             </Box>
           )}
           {tokenMetadata && (

@@ -1,12 +1,11 @@
 import { useContext } from 'react'
 import { Box, Button, Header, ResponsiveContext, Select, Text } from 'grommet'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { Network } from 'common/constants'
+import { en } from 'locales'
 import { useStateContext } from 'components'
-import { XummTypes } from 'xumm-sdk'
-import { XrplError } from 'xrpl'
 
 function AppHeader(): JSX.Element {
   const size = useContext(ResponsiveContext)
@@ -14,28 +13,24 @@ function AppHeader(): JSX.Element {
 
   async function signIntoXUMM(): Promise<void> {
     try {
-      xumm.authorize()
+      const authorized = await xumm.authorize()
+      console.log('User info', authorized?.me)
     } catch (error) {
       if (error instanceof Error) {
-        console.log('Error message: ', error.message)
         window.alert(error.message)
       }
     }
   }
 
   async function signOutXUMM(): Promise<void> {
-    console.log('log out clicked!')
     xumm.logout()
     updateIsXummConnected(false)
   }
 
   useEffect(() => {
     xumm.on('success', async () => {
-      console.log('success detected')
       updateIsXummConnected(true)
     })
-
-    console.log('xumm.on set up once')
 
     return () => {
       xumm.off('success', async () => {
@@ -50,7 +45,11 @@ function AppHeader(): JSX.Element {
       pad={{ horizontal: 'large', vertical: 'small' }}
       justify="between"
     >
-      <Box>{size !== 'small' && <Text weight="bold">{network}</Text>}</Box>
+      {size !== 'small' && (
+        <Box>
+          <Text weight="bold">{network}</Text>
+        </Box>
+      )}
       <Box width={size === 'small' ? '140px' : 'small'}>
         <Select
           id="network"
@@ -61,9 +60,12 @@ function AppHeader(): JSX.Element {
           onChange={({ option }) => updateNetwork(Network[option as keyof typeof Network])}
         />
       </Box>
-      <Box width={size === 'small' ? '100px' : 'small'}>
-        <Button label="Connect XUMM" onClick={signIntoXUMM} />
-        <Button label="Logout" onClick={signOutXUMM} disabled={!isXummConnected}/>
+      <Box width={size === 'small' ? '180px' : 'small'}>
+        {isXummConnected ? (
+          <Button label={en.xumm.disconnect} onClick={signOutXUMM} />
+        ) : (
+          <Button label={en.xumm.connect} onClick={signIntoXUMM} />
+        )}
       </Box>
     </Header>
   )

@@ -8,11 +8,17 @@ import {
   rippleTimeToISOTime,
 } from 'xrpl'
 
+import { XummJsonTransaction } from 'xumm-sdk/dist/src/types'
 import { XummPkce } from 'xumm-oauth2-pkce'
 
 import { MINT_BY_MEMO } from './constants'
 import { TransactionFields } from 'common/entities'
-import { XummJsonTransaction } from 'xumm-sdk/dist/src/types'
+import { en } from 'locales'
+
+export interface XummTxResponse {
+  success: boolean
+  message: string
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getJSON(url: string): Promise<any> {
@@ -31,13 +37,13 @@ export function formatDate(date: number): string {
   return new Date(iso).toString()
 }
 
-export async function mintNft(
+export async function buildTransaction(
   txFields: TransactionFields,
   client: Client,
   wallet: Wallet,
   metadataUri: string,
   svgData: string
-): Promise<TxResponse> {
+) {
   const transaction: Transaction = await client.autofill({
     TransactionType: 'NFTokenMint',
     Account: wallet.address,
@@ -59,7 +65,17 @@ export async function mintNft(
     ],
   })
 
-  console.log('transaction object is ', transaction)
+  return transaction
+}
+
+export async function mintNft(
+  txFields: TransactionFields,
+  client: Client,
+  wallet: Wallet,
+  metadataUri: string,
+  svgData: string
+): Promise<TxResponse> {
+  const transaction: Transaction = await buildTransaction(txFields, client, wallet, metadataUri, svgData)
 
   const signedTx = wallet.sign(transaction)
 
@@ -70,15 +86,14 @@ export async function mintNft(
 
 export async function mintXummNft(
   txFields: TransactionFields,
-  client: Client,
   metadataUri: string,
   svgData: string,
   xumm: XummPkce
-): Promise<boolean> {
+): Promise<XummTxResponse> {
   const state = await xumm.state()
   const sdk = state?.sdk
 
-  const request: XummJsonTransaction = {
+  const transaction: XummJsonTransaction = {
     TransactionType: 'NFTokenMint',
     URI: convertStringToHex(metadataUri),
     Flags: Number(txFields.flags),
@@ -98,38 +113,26 @@ export async function mintXummNft(
     ],
   }
 
-  const xummResponse = await sdk?.payload.createAndSubscribe(request, (event) => {
-    console.log('New payload event: ', event.data)
+  try {
+    const xummResponse = await sdk?.payload.createAndSubscribe(transaction, (event) => {
+      return event.data.signed ? event.data : false
+    })
 
-    if (event.data.signed === true) {
-      // No need to console.log here, we'll do that below
-      return event.data
-    }
+    const resolveMint: any = await xummResponse?.resolved
 
-    if (event.data.signed === false) {
-      // No need to console.log here, we'll do that below
-      return false
-    }
-  })
-
-  console.log(xummResponse?.created)
-  console.log('Returned tx from xumm: ', xummResponse)
-
-  const resolveMint = await xummResponse?.resolved
-
-  console.log('Resolved: ', resolveMint)
-
-  if (resolveMint?.signed === false) {
-    console.log('The sign request was rejected :(')
-    return false
+    return resolveMint.signed
+      ? {
+          success: true,
+          message: resolveMint.txid,
+        }
+      : {
+          success: false,
+          message: `${en.mint.xummReject}`,
+        }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return error.message
   }
-
-  if (resolveMint?.signed === true) {
-    console.log('Woohoo! The sign request was signed :)')
-    return true
-  }
-
-  return false
 }
 
 export async function getNfts(client: Client, wallet: Wallet): Promise<AccountNFTsResponse> {

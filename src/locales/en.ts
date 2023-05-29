@@ -47,5 +47,10 @@ export default {
     txDate: 'NFTokenMint Transaction Date',
     success: 'Success!',
     xummSuccess: 'You minted successfully on Xumm!',
+    xummReject: 'The sign request was rejected.',
+  },
+  xumm: {
+    connect: 'Connect Xumm',
+    disconnect: 'Disconnect',
   },
 }
