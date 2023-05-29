@@ -37,6 +37,7 @@ function AppHeader(): JSX.Element {
         console.log('Using xumm.off to turn off xumm.on from useEffect')
       })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

@@ -118,6 +118,7 @@ export async function mintXummNft(
       return event.data.signed ? event.data : false
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resolveMint: any = await xummResponse?.resolved
 
     return resolveMint.signed
