@@ -57,7 +57,11 @@ function Draw(): JSX.Element {
       <Box direction="row" gap="xlarge" wrap>
         <Box width="medium" pad="small" gap="medium" margin={{ bottom: 'large' }}>
           <Text>{en.draw.instructions}</Text>
-          <TextInput value={inputValue} onChange={(event) => setInputValue(event.target.value)} />
+          <TextInput
+            a11yTitle={en.draw.textInput}
+            value={inputValue}
+            onChange={(event) => setInputValue(event.target.value)}
+          />
           <Box direction="row" gap="medium">
             <Box flex>
               <Button label={en.draw.drawButton} onClick={handleDraw} size="medium" />

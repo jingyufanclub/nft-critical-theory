@@ -1,11 +1,11 @@
 import JSONPretty from 'react-json-pretty'
 import { Box, Button, Form, FormField, Image, Page, PageHeader, Text } from 'grommet'
-import { Client, TxResponse, Wallet } from 'xrpl'
+import { Client, TxResponse, Wallet, getNFTokenID } from 'xrpl'
 import { useEffect, useState } from 'react'
 
 import { Loading, useStateContext } from 'components'
 import { TokenMetadata, TransactionFields } from 'common/entities'
-import { formatDate, getJSON, mintNft, mintXummNft, validateSeed, XummTxResponse } from 'common/utils'
+import { XummTxResponse, formatDate, getJSON, mintNft, mintXummNft, validateSeed } from 'common/utils'
 
 import { en } from 'locales'
 
@@ -25,6 +25,7 @@ function Mint(): JSX.Element {
   const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
+  const [nftId, setNftId] = useState<string | undefined>(undefined)
 
   async function getMetadata(): Promise<void> {
     try {
@@ -58,6 +59,9 @@ function Mint(): JSX.Element {
 
       if (wallet) {
         const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
+        if (response.result.meta && typeof response.result.meta !== 'string') {
+          setNftId(getNFTokenID(response.result.meta))
+        }
         return setTxResponse(response)
       }
     } catch (error) {
@@ -147,6 +151,9 @@ function Mint(): JSX.Element {
               </Text>
               <Text>
                 {en.mint.txDate}: {formatDate(txResponse.result.date as number)}
+              </Text>
+              <Text>
+                {en.mint.nftId} {nftId}
               </Text>
             </Box>
           )}
