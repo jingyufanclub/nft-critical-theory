@@ -115,24 +115,35 @@ export async function mintXummNft(
 
   try {
     const xummResponse = await sdk?.payload.createAndSubscribe(transaction, (event) => {
-      return event.data.signed ? event.data : false
+      if (event.data.signed === true) {
+        return event.data
+      }
+
+      if (event.data.signed === false) {
+        return null
+      }
     })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resolveMint: any = await xummResponse?.resolved
+    if (resolveMint?.signed === true) {
+      const result = await sdk?.payload.get(resolveMint.payload_uuidv4)
+      return {
+        success: true,
+        message: result?.response.txid as string,
+      }
+    }
 
-    return resolveMint.signed
-      ? {
-          success: true,
-          message: resolveMint.txid,
-        }
-      : {
-          success: false,
-          message: `${en.mint.xummReject}`,
-        }
+    return {
+      success: false,
+      message: `${en.mint.xummReject}`,
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    return error.message
+    return {
+      success: false,
+      message: error.message,
+    }
   }
 }
 

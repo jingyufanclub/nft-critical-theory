@@ -53,6 +53,7 @@ export default {
     success: 'Success!',
     xummSuccess: 'You minted successfully on Xumm!',
     xummReject: 'The sign request was rejected.',
+    xummError: 'An error has occurred.',
   },
   xumm: {
     connect: 'Connect Xumm',
