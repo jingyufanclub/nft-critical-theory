@@ -8,8 +8,17 @@ import {
   rippleTimeToISOTime,
 } from 'xrpl'
 
+import { XummJsonTransaction } from 'xumm-sdk/dist/src/types'
+import { XummPkce } from 'xumm-oauth2-pkce'
+
 import { MINT_BY_MEMO } from './constants'
 import { TransactionFields } from 'common/entities'
+import { en } from 'locales'
+
+export interface XummTxResponse {
+  success: boolean
+  message: string
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getJSON(url: string): Promise<any> {
@@ -28,13 +37,13 @@ export function formatDate(date: number): string {
   return new Date(iso).toString()
 }
 
-export async function mintNft(
+export async function buildTransaction(
   txFields: TransactionFields,
   client: Client,
   wallet: Wallet,
   metadataUri: string,
   svgData: string
-): Promise<TxResponse> {
+) {
   const transaction: Transaction = await client.autofill({
     TransactionType: 'NFTokenMint',
     Account: wallet.address,
@@ -56,11 +65,86 @@ export async function mintNft(
     ],
   })
 
+  return transaction
+}
+
+export async function mintNft(
+  txFields: TransactionFields,
+  client: Client,
+  wallet: Wallet,
+  metadataUri: string,
+  svgData: string
+): Promise<TxResponse> {
+  const transaction: Transaction = await buildTransaction(txFields, client, wallet, metadataUri, svgData)
+
   const signedTx = wallet.sign(transaction)
 
   const txResponse = await client.submitAndWait(signedTx.tx_blob, { wallet })
 
   return txResponse
+}
+
+export async function mintXummNft(
+  txFields: TransactionFields,
+  metadataUri: string,
+  svgData: string,
+  xumm: XummPkce
+): Promise<XummTxResponse> {
+  const state = await xumm.state()
+  const sdk = state?.sdk
+
+  const transaction: XummJsonTransaction = {
+    TransactionType: 'NFTokenMint',
+    URI: convertStringToHex(metadataUri),
+    Flags: Number(txFields.flags),
+    TransferFee: Number(txFields.transferFee),
+    NFTokenTaxon: Number(txFields.taxon),
+    Memos: [
+      {
+        Memo: {
+          MemoData: convertStringToHex(MINT_BY_MEMO),
+        },
+      },
+      {
+        Memo: {
+          MemoData: convertStringToHex(svgData),
+        },
+      },
+    ],
+  }
+
+  try {
+    const xummResponse = await sdk?.payload.createAndSubscribe(transaction, (event) => {
+      if (event.data.signed === true) {
+        return event.data
+      }
+
+      if (event.data.signed === false) {
+        return null
+      }
+    })
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const resolveMint: any = await xummResponse?.resolved
+    if (resolveMint?.signed === true) {
+      const result = await sdk?.payload.get(resolveMint.payload_uuidv4)
+      return {
+        success: true,
+        message: result?.response.txid as string,
+      }
+    }
+
+    return {
+      success: false,
+      message: `${en.mint.xummReject}`,
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+    }
+  }
 }
 
 export async function getNfts(client: Client, wallet: Wallet): Promise<AccountNFTsResponse> {

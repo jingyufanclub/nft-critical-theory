@@ -1,16 +1,20 @@
 import { createContext, useContext, useState } from 'react'
 
 import { Network } from 'common/constants'
+import { XummPkce } from 'xumm-oauth2-pkce'
 
 type StateContextType = {
   metadataCid: string
   svgData: string
   text: string
   network: Network
+  xumm: XummPkce
+  isXummConnected: boolean
   updateMetadataCid: (value: string) => void
   updateNetwork: (value: Network) => void
   updateSvgData: (value: string) => void
   updateText: (value: string) => void
+  updateIsXummConnected: (value: boolean) => void
 }
 
 const defaultStateContext: StateContextType = {
@@ -18,10 +22,13 @@ const defaultStateContext: StateContextType = {
   svgData: '',
   text: '',
   network: Network.TESTNET,
+  xumm: new XummPkce('c6f8ad59-180f-47c1-8c87-2eaf9b8cca26'),
+  isXummConnected: false,
   updateMetadataCid: () => {},
   updateNetwork: () => {},
   updateSvgData: () => {},
   updateText: () => {},
+  updateIsXummConnected: () => {},
 }
 
 const StateContext = createContext<StateContextType>(defaultStateContext)
@@ -31,6 +38,8 @@ function StateProvider({ children }: { children: JSX.Element }) {
   const [network, setNetwork] = useState<Network>(Network.TESTNET)
   const [svgData, setSvg] = useState<string>('')
   const [text, setText] = useState<string>('')
+  const [xumm] = useState<XummPkce>(new XummPkce('c6f8ad59-180f-47c1-8c87-2eaf9b8cca26'))
+  const [isXummConnected, setIsXummConnected] = useState<boolean>(false)
 
   function updateMetadataCid(value: string): void {
     setMetadataCid(value)
@@ -48,15 +57,22 @@ function StateProvider({ children }: { children: JSX.Element }) {
     setText(value)
   }
 
+  function updateIsXummConnected(value: boolean): void {
+    setIsXummConnected(value)
+  }
+
   const value = {
     metadataCid,
     network,
     svgData,
     text,
+    xumm,
+    isXummConnected,
     updateMetadataCid,
     updateNetwork,
     updateSvgData,
     updateText,
+    updateIsXummConnected,
   }
 
   return <StateContext.Provider value={value}>{children}</StateContext.Provider>

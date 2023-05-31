@@ -50,5 +50,13 @@ export default {
     txId: 'NFTokenMint Transaction ID',
     txDate: 'NFTokenMint Transaction Date',
     nftId: 'NFTokenID',
+    success: 'Success!',
+    xummSuccess: 'You minted successfully on Xumm!',
+    xummReject: 'The sign request was rejected.',
+    xummError: 'An error has occurred.',
+  },
+  xumm: {
+    connect: 'Connect Xumm',
+    disconnect: 'Disconnect',
   },
 }
