@@ -5,7 +5,7 @@ export default {
   home: {
     pageTitle: 'This is not a rug pull',
     projectDescription:
-      'This is a project that uses blockchain technology and non-fungible tokens (NFTs) to represent and bestow value to intangible ideas such as emotions, memories, and creative acts in a way that can be bought, sold, and exchanged. This is a tool built on the XRP Ledger (XRPL) that gives the means of production and distribution of conceptual art to everyone.',
+      'This is a project that uses non-fungible tokens (NFTs) to represent and bestow value to intangible ideas such as emotions, memories, and creative acts in a way that can be bought, sold, and exchanged. Built on the XRP Ledger (XRPL) with other blockchains forthcoming, this tool gives the means of production and distribution of conceptual art to everyone.',
     requirements: 'You will need:',
     xrplFaucet: 'XRPL credentials',
     nftStorage: 'nft.storage API key',
@@ -18,15 +18,16 @@ export default {
     fallback: 'OOPS!',
   },
   draw: {
-    pageTitle: 'Create',
-    instructions: 'Enter your desired text one line at a time',
+    pageTitle: 'Step 1: Create',
+    instructions: 'Enter your desired text one line at a time. You will see a preview of your final NFT on the right.',
     textInput: 'Enter desired text',
     drawButton: 'Draw',
     resetButton: 'Reset',
     navigateButton: 'Go to next step',
   },
   metadata: {
-    pageTitle: 'Edit metadata',
+    pageTitle: 'Step 2: Enter desired metadata',
+    instructions: "This data will be stored on nft.storage, so you'll need to enter your own nft.storage api key.",
     editName: 'Edit name',
     editDescription: 'Edit description',
     addCollection: 'Add collection name (optional)',
@@ -37,7 +38,9 @@ export default {
     navigateButton: 'Go to next step',
   },
   mint: {
-    pageTitle: 'Mint',
+    pageTitle: 'Step 3: Mint!',
+    instructions: 'Connect a Xumm wallet or enter an XRP Wallet seed to mint from your wallet.',
+    instructions2: "Review your NFT's other attributes. We've defaulted to the standard ones.",
     walletSeed: 'Wallet seed',
     walletSeedInfo: 'Family seed starting with "s"',
     walletAddress: 'Wallet Address',

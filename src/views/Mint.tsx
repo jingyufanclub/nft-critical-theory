@@ -99,15 +99,19 @@ function Mint(): JSX.Element {
             onReset={() => setTxFields(defaultFields)}
           >
             {!isXummConnected && (
-              <FormField
-                name="walletSeed"
-                id="walletSeed"
-                htmlFor="walletSeed"
-                label={en.mint.walletSeed}
-                info={en.mint.walletSeedInfo}
-                required
-              />
+              <div>
+                <Text>{en.mint.instructions}</Text>
+                <FormField
+                  name="walletSeed"
+                  id="walletSeed"
+                  htmlFor="walletSeed"
+                  label={en.mint.walletSeed}
+                  info={en.mint.walletSeedInfo}
+                  required
+                />
+              </div>
             )}
+            <Text>{en.mint.instructions2}</Text>
             <FormField
               name="flags"
               id="flags"
