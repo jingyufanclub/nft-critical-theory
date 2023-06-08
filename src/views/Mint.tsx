@@ -1,5 +1,5 @@
 import JSONPretty from 'react-json-pretty'
-import { Box, Button, Form, FormField, Image, Page, PageHeader, Text } from 'grommet'
+import { Box, Button, Form, FormField, Image, Page, PageHeader, Paragraph, Text } from 'grommet'
 import { Client, TxResponse, Wallet, getNFTokenID } from 'xrpl'
 import { useEffect, useState } from 'react'
 
@@ -100,7 +100,7 @@ function Mint(): JSX.Element {
           >
             {!isXummConnected && (
               <div>
-                <Text>{en.mint.instructions}</Text>
+                <Paragraph>{en.mint.instructions}</Paragraph>
                 <FormField
                   name="walletSeed"
                   id="walletSeed"
@@ -111,7 +111,8 @@ function Mint(): JSX.Element {
                 />
               </div>
             )}
-            <Text>{en.mint.instructions2}</Text>
+            <Box></Box>
+            <Paragraph>{en.mint.instructions2}</Paragraph>
             <FormField
               name="flags"
               id="flags"
