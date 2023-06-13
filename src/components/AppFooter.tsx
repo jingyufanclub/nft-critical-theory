@@ -1,4 +1,4 @@
-import { Footer, Text } from 'grommet'
+import { Anchor, Footer, Text } from 'grommet'
 
 function AppFooter(): JSX.Element {
   return (
@@ -8,7 +8,7 @@ function AppFooter(): JSX.Element {
         <br />
         Feedback/business inquiries? <a href="mailto: this.is.not.a.rug.pull@gmail.com">Drop us a line</a>
         <br />
-        Follow us on <a href="https://twitter.com/not_a_rug_pull">Twitter</a>
+        Follow us on <Anchor href="https://twitter.com/not_a_rug_pull" target="_blank" label="Twitter" />
       </Text>
     </Footer>
   )
