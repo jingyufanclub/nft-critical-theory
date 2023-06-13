@@ -99,7 +99,7 @@ function Mint(): JSX.Element {
             onReset={() => setTxFields(defaultFields)}
           >
             {!isXummConnected && (
-              <Box margin={{ bottom: 'medium'}}>
+              <Box margin={{ bottom: 'medium' }}>
                 <Paragraph>{en.mint.instructions}</Paragraph>
                 <FormField
                   name="walletSeed"
