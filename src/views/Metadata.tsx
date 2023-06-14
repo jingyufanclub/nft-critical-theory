@@ -1,7 +1,7 @@
 import JSONPretty from 'react-json-pretty'
 import { useNavigate } from 'react-router-dom'
 import { Blob, NFTStorage } from 'nft.storage'
-import { Box, Button, Page, PageHeader, TextArea, TextInput } from 'grommet'
+import { Box, Button, Page, PageHeader, Text, TextArea, TextInput } from 'grommet'
 import { Hide, View } from 'grommet-icons'
 import { useEffect, useState } from 'react'
 
@@ -97,6 +97,7 @@ function Metadata(): JSX.Element {
             onChange={(event) => handleAddCollection(event.target.value)}
             placeholder={en.metadata.addCollection}
           />
+          <Text>{en.metadata.instructions}</Text>
           <Box width="medium" direction="row" gap="small" align="center" round="4px">
             <TextInput
               value={nftStorageKey}
@@ -120,6 +121,7 @@ function Metadata(): JSX.Element {
           </Box>
         </Box>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
+          <Text>JSON:</Text>
           <JSONPretty data={metadata} />
           <Box align="center">
             <Button label={en.metadata.navigateButton} onClick={handleNavigate} disabled={!metadataCid} />

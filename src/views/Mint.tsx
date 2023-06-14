@@ -1,5 +1,5 @@
 import JSONPretty from 'react-json-pretty'
-import { Box, Button, Form, FormField, Image, Page, PageHeader, Text } from 'grommet'
+import { Box, Button, Form, FormField, Image, Page, PageHeader, Paragraph, Text } from 'grommet'
 import { Client, TxResponse, Wallet, getNFTokenID } from 'xrpl'
 import { useEffect, useState } from 'react'
 
@@ -99,15 +99,19 @@ function Mint(): JSX.Element {
             onReset={() => setTxFields(defaultFields)}
           >
             {!isXummConnected && (
-              <FormField
-                name="walletSeed"
-                id="walletSeed"
-                htmlFor="walletSeed"
-                label={en.mint.walletSeed}
-                info={en.mint.walletSeedInfo}
-                required
-              />
+              <Box margin={{ bottom: 'medium' }}>
+                <Paragraph>{en.mint.instructions}</Paragraph>
+                <FormField
+                  name="walletSeed"
+                  id="walletSeed"
+                  htmlFor="walletSeed"
+                  label={en.mint.walletSeed}
+                  info={en.mint.walletSeedInfo}
+                  required
+                />
+              </Box>
             )}
+            <Paragraph>{en.mint.instructions2}</Paragraph>
             <FormField
               name="flags"
               id="flags"
