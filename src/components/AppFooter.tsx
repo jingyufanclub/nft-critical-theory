@@ -6,9 +6,9 @@ function AppFooter(): JSX.Element {
       <Text size="small">
         {`Jing Yu & Chris Lee ${new Date().getFullYear()}`}
         <br />
-        Feedback/business inquiries? <a href="mailto: this.is.not.a.rug.pull@gmail.com">Drop us a line</a>
+        Feedback/business inquiries? <Anchor href="mailto: this.is.not.a.rug.pull@gmail.com" label="Drop us a line" />
         <br />
-        Follow us on <Anchor href="https://twitter.com/not_a_rug_pull" target="_blank" label="Twitter" />
+        Follow us on <Anchor href="https://twitter.com/not_a_rug_pull" target="_blank" rel="noopener" label="Twitter" />
       </Text>
     </Footer>
   )
