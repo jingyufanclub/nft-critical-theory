@@ -23,7 +23,7 @@ function Metadata(): JSX.Element {
   const navigate = useNavigate()
   const { svgData, text, metadataCid, updateMetadataCid } = useStateContext()
   const [metadata, setMetadata] = useState<TokenMetadata>(defaultMetadata)
-  const [nftStorageKey, setNftStorageKey] = useState<string>('')
+  const [nftStorageKey, setNftStorageKey] = useState<string>(localStorage.getItem('nftStorageKey') || '')
   const [reveal, setReveal] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -45,22 +45,25 @@ function Metadata(): JSX.Element {
 
   function handleApiKey(key: string): void {
     setNftStorageKey(key)
+    localStorage.setItem('nftStorageKey', key)
   }
 
   async function handleUpload(): Promise<void> {
     setLoading(true)
-    try {
-      const nftStorageClient = new NFTStorage({
-        token: nftStorageKey,
-      })
-      const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
-      const cid = await nftStorageClient.storeBlob(blob)
-      updateMetadataCid(cid)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      window.alert(error.message)
-    } finally {
-      setLoading(false)
+    if (nftStorageKey) {
+      try {
+        const nftStorageClient = new NFTStorage({
+          token: nftStorageKey,
+        })
+        const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
+        const cid = await nftStorageClient.storeBlob(blob)
+        updateMetadataCid(cid)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        window.alert(error.message)
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
