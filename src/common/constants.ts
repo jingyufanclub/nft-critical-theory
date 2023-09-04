@@ -6,6 +6,12 @@ export const MINT_BY_MEMO = 'NFTokenMint by not-a-rug-pull.xyz'
 
 export enum Network {
   DEVNET = 'wss://s.devnet.rippletest.net:51233/',
-  TESTNET = 'wss://s.altnet.rippletest.net:51233/',
   MAINNET = 'wss://xrplcluster.com/',
+  TESTNET = 'wss://s.altnet.rippletest.net:51233/',
+}
+
+export const bithompBaseUrl = {
+  [Network.DEVNET]: 'https://dev.bithomp.com',
+  [Network.MAINNET]: 'https://bithomp.com',
+  [Network.TESTNET]: 'https://test.bithomp.com',
 }
