@@ -94,13 +94,16 @@ function Mint(): JSX.Element {
     const localWalletSeed = localStorage.getItem(`${network}-walletSeed`)
     if (localWalletSeed !== null) {
       setWalletSeed(localWalletSeed)
-      getWallet()
     } else {
       setWalletSeed('')
-      setWallet(null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [network])
+
+  useEffect(() => {
+    getWallet()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletSeed])
 
   useEffect(() => {
     getMetadata()
