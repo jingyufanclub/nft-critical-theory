@@ -12,7 +12,6 @@ export interface Collection {
 }
 
 export interface TransactionFields {
-  walletSeed: string
   flags: number
   transferFee: number
   taxon: number

@@ -26,6 +26,7 @@ function Metadata(): JSX.Element {
   const [nftStorageKey, setNftStorageKey] = useState<string>(localStorage.getItem('nftStorageKey') || '')
   const [reveal, setReveal] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
+  const [disableUploadButton, setDisableUploadButton] = useState<boolean>(true)
 
   function handleEditName(name: string): void {
     setMetadata({ ...metadata, name })
@@ -48,6 +49,10 @@ function Metadata(): JSX.Element {
     localStorage.setItem('nftStorageKey', key)
   }
 
+  function handleNavigate(): void {
+    navigate('/mint')
+  }
+
   async function handleUpload(): Promise<void> {
     setLoading(true)
     if (nftStorageKey) {
@@ -58,6 +63,7 @@ function Metadata(): JSX.Element {
         const blob = new Blob([JSON.stringify(metadata, null, 2)], { type: 'application/json' })
         const cid = await nftStorageClient.storeBlob(blob)
         updateMetadataCid(cid)
+        setDisableUploadButton(true)
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         window.alert(error.message)
@@ -67,9 +73,11 @@ function Metadata(): JSX.Element {
     }
   }
 
-  function handleNavigate(): void {
-    navigate('/mint')
-  }
+  useEffect(() => {
+    if (nftStorageKey && metadata.image) {
+      setDisableUploadButton(false)
+    }
+  }, [nftStorageKey, metadata])
 
   useEffect(() => {
     setMetadata({
@@ -116,11 +124,7 @@ function Metadata(): JSX.Element {
             />
           </Box>
           <Box align="center">
-            <Button
-              label={en.metadata.uploadMetadata}
-              onClick={handleUpload}
-              disabled={!nftStorageKey || Boolean(metadataCid)}
-            />
+            <Button label={en.metadata.uploadMetadata} onClick={handleUpload} disabled={disableUploadButton} />
           </Box>
         </Box>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>

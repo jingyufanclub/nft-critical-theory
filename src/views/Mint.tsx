@@ -1,16 +1,18 @@
 import JSONPretty from 'react-json-pretty'
-import { Box, Button, Form, FormField, Image, Page, PageHeader, Paragraph, Text } from 'grommet'
-import { Client, TxResponse, Wallet, getNFTokenID } from 'xrpl'
+import { useNavigate } from 'react-router-dom'
+import { Box, Button, Form, FormField, Image, Page, PageHeader, Paragraph, Text, TextInput } from 'grommet'
+import { Client, TxResponse, Wallet } from 'xrpl'
+import { Hide, ShareRounded, View } from 'grommet-icons'
 import { useEffect, useState } from 'react'
 
-import { Loading, useStateContext } from 'components'
+import { bithompBaseUrl } from 'common/constants'
+import { AnchorLink, Loading, useStateContext } from 'components'
 import { TokenMetadata, TransactionFields } from 'common/entities'
-import { XummTxResponse, formatDate, getJSON, mintNft, mintXummNft, validateSeed } from 'common/utils'
+import { XummTxResponse, getJSON, mintNft, mintXummNft, validateSeed } from 'common/utils'
 
 import { en } from 'locales'
 
 const defaultFields: TransactionFields = {
-  walletSeed: '',
   flags: 11,
   transferFee: 10000,
   taxon: 0,
@@ -21,11 +23,13 @@ function Mint(): JSX.Element {
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [xummTxResponse, setXummTxResponse] = useState<XummTxResponse>()
+  const [walletSeed, setWalletSeed] = useState<string>(localStorage.getItem(`${network}-walletSeed`) || '')
+  const [reveal, setReveal] = useState<boolean>(false)
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
   const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
-  const [nftId, setNftId] = useState<string | undefined>(undefined)
+  const navigate = useNavigate()
 
   async function getMetadata(): Promise<void> {
     try {
@@ -36,10 +40,17 @@ function Mint(): JSX.Element {
     }
   }
 
+  function handleWalletSeed(key: string): void {
+    if (validateSeed(key)) {
+      setWalletSeed(key)
+      localStorage.setItem(`${network}-walletSeed`, key)
+    }
+  }
+
   function getWallet(): void {
-    if (validateSeed(txFields.walletSeed)) {
+    if (validateSeed(walletSeed)) {
       try {
-        const wallet = Wallet.fromSeed(txFields.walletSeed)
+        const wallet = Wallet.fromSeed(walletSeed)
         setWallet(wallet)
       } catch (error) {
         console.error(error)
@@ -59,9 +70,6 @@ function Mint(): JSX.Element {
 
       if (wallet) {
         const response = await mintNft(txFields, client, wallet, metadataUri, svgData)
-        if (response.result.meta && typeof response.result.meta !== 'string') {
-          setNftId(getNFTokenID(response.result.meta))
-        }
         return setTxResponse(response)
       }
     } catch (error) {
@@ -74,14 +82,25 @@ function Mint(): JSX.Element {
     client.disconnect()
   }
 
+  function handleNavigate(): void {
+    navigate('/draw')
+  }
+
   useEffect(() => {
     setClient(new Client(network))
   }, [network])
 
   useEffect(() => {
-    getWallet()
+    const localWalletSeed = localStorage.getItem(`${network}-walletSeed`)
+    if (localWalletSeed !== null) {
+      setWalletSeed(localWalletSeed)
+      getWallet()
+    } else {
+      setWalletSeed('')
+      setWallet(null)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [txFields.walletSeed])
+  }, [network])
 
   useEffect(() => {
     getMetadata()
@@ -93,24 +112,27 @@ function Mint(): JSX.Element {
       <PageHeader title={en.mint.pageTitle} />
       <Box direction="row" gap="xlarge" wrap>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
+          {!isXummConnected && (
+            <Box width="medium" direction="row" gap="small" align="center" round="4px">
+              <TextInput
+                value={walletSeed}
+                onChange={(event) => handleWalletSeed(event.target.value)}
+                placeholder={en.mint.walletSeedInfo}
+                type={reveal ? 'text' : 'password'}
+              />
+              <Button
+                plain
+                a11yTitle={reveal ? en.metadata.hideKey : en.metadata.revealKey}
+                icon={reveal ? <Hide /> : <View />}
+                onClick={() => setReveal(!reveal)}
+              />
+            </Box>
+          )}
           <Form
             value={txFields}
             onChange={(nextValue) => setTxFields(nextValue)}
             onReset={() => setTxFields(defaultFields)}
           >
-            {!isXummConnected && (
-              <Box margin={{ bottom: 'medium' }}>
-                <Paragraph>{en.mint.instructions}</Paragraph>
-                <FormField
-                  name="walletSeed"
-                  id="walletSeed"
-                  htmlFor="walletSeed"
-                  label={en.mint.walletSeed}
-                  info={en.mint.walletSeedInfo}
-                  required
-                />
-              </Box>
-            )}
             <Paragraph>{en.mint.instructions2}</Paragraph>
             <FormField
               name="flags"
@@ -148,22 +170,21 @@ function Mint(): JSX.Element {
             </Text>
           )}
           {txResponse && (
-            <Box>
+            <Box direction="column">
               <Text>{en.mint.success}</Text>
-              <Text>
-                {en.mint.txId}: {txResponse.result.hash}
-              </Text>
-              <Text>
-                {en.mint.txDate}: {formatDate(txResponse.result.date as number)}
-              </Text>
-              <Text>
-                {en.mint.nftId} {nftId}
-              </Text>
+              <Box direction="row" align="center" gap="xsmall">
+                <AnchorLink
+                  to={`${bithompBaseUrl[network]}/explorer/${txResponse.result.hash}`}
+                  label={en.mint.successView}
+                  target="_blank"
+                />
+                <ShareRounded color="brand" size="small" />
+              </Box>
             </Box>
           )}
           {txResponse && (
             <Box gap="medium">
-              <Button label="Make another NFT!" />
+              <Button label={en.mint.newMint} onClick={handleNavigate} />
             </Box>
           )}
           {xummTxResponse?.success ? (
