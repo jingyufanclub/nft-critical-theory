@@ -4,6 +4,7 @@ import { Box, Button, Form, FormField, Image, Page, PageHeader, Paragraph, Text,
 import { Client, TxResponse, Wallet } from 'xrpl'
 import { Hide, ShareRounded, View } from 'grommet-icons'
 import { useEffect, useState } from 'react'
+import { ResolvedFlow } from 'xumm-oauth2-pkce'
 
 import { bithompBaseUrl } from 'common/constants'
 import { AnchorLink, Loading, useStateContext } from 'components'
@@ -28,6 +29,7 @@ function Mint(): JSX.Element {
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
   const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
+  const [me, setMe] = useState<ResolvedFlow['me'] | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
 
@@ -54,6 +56,15 @@ function Mint(): JSX.Element {
         setWallet(wallet)
       } catch (error) {
         console.error(error)
+      }
+    }
+  }
+
+  async function getMe(): Promise<void> {
+    if (isXummConnected) {
+      const xummRes = await xumm.state()
+      if (xummRes) {
+        setMe(xummRes.me)
       }
     }
   }
@@ -107,6 +118,7 @@ function Mint(): JSX.Element {
 
   useEffect(() => {
     getMetadata()
+    getMe()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -115,7 +127,7 @@ function Mint(): JSX.Element {
       <PageHeader title={en.mint.pageTitle} />
       <Box direction="row" gap="xlarge" wrap>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
-          {!isXummConnected && (
+          {!isXummConnected ? (
             <Box width="medium" direction="row" gap="small" align="center" round="4px">
               <TextInput
                 value={walletSeed}
@@ -130,7 +142,7 @@ function Mint(): JSX.Element {
                 onClick={() => setReveal(!reveal)}
               />
             </Box>
-          )}
+          ) : null}
           <Form
             value={txFields}
             onChange={(nextValue) => setTxFields(nextValue)}
@@ -167,12 +179,17 @@ function Mint(): JSX.Element {
           </Box>
         </Box>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
-          {wallet && (
+          {wallet && !isXummConnected ? (
             <Text>
               {en.mint.walletAddress} {wallet.address}
             </Text>
-          )}
-          {txResponse && (
+          ) : null}
+          {me ? (
+            <Text>
+              {en.mint.walletAddress} {me.account}
+            </Text>
+          ) : null}
+          {txResponse ? (
             <Box direction="column">
               <Text>{en.mint.success}</Text>
               <Box direction="row" align="center" gap="xsmall">
@@ -184,36 +201,41 @@ function Mint(): JSX.Element {
                 <ShareRounded color="brand" size="small" />
               </Box>
             </Box>
-          )}
-          {txResponse && (
-            <Box gap="medium">
-              <Button label={en.mint.newMint} onClick={handleNavigate} />
-            </Box>
-          )}
+          ) : null}
           {xummTxResponse?.success ? (
-            <Box>
+            <Box direction="column">
               <Text>{en.mint.xummSuccess}</Text>
-              <Text>
-                {en.mint.txId}: {xummTxResponse.message}
-              </Text>
+              <Box direction="row" align="center" gap="xsmall">
+                <AnchorLink
+                  to={`${bithompBaseUrl[network]}/explorer/${xummTxResponse.message}`}
+                  label={en.mint.successView}
+                  target="_blank"
+                />
+                <ShareRounded color="brand" size="small" />
+              </Box>
             </Box>
           ) : (
             <Box>
               <Text>{xummTxResponse?.message}</Text>
             </Box>
           )}
-          {tokenMetadata && (
+          {txResponse || xummTxResponse?.success ? (
+            <Box gap="medium">
+              <Button label={en.mint.newMint} onClick={handleNavigate} />
+            </Box>
+          ) : null}
+          {tokenMetadata ? (
             <Box>
               <Box border>
                 <Image src={tokenMetadata.image} />
               </Box>
               <JSONPretty data={tokenMetadata} />
             </Box>
-          )}
+          ) : null}
         </Box>
       </Box>
 
-      {loading && <Loading />}
+      {loading ? <Loading /> : null}
     </Page>
   )
 }
