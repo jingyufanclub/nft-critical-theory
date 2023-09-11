@@ -4,7 +4,6 @@ import { Box, Button, Form, FormField, Image, Page, PageHeader, Paragraph, Text,
 import { Client, TxResponse, Wallet } from 'xrpl'
 import { Hide, ShareRounded, View } from 'grommet-icons'
 import { useEffect, useState } from 'react'
-import { ResolvedFlow } from 'xumm-oauth2-pkce'
 
 import { bithompBaseUrl } from 'common/constants'
 import { AnchorLink, Loading, useStateContext } from 'components'
@@ -20,7 +19,7 @@ const defaultFields: TransactionFields = {
 }
 
 function Mint(): JSX.Element {
-  const { metadataCid, network, svgData, xumm, isXummConnected } = useStateContext()
+  const { metadataCid, network, svgData, xumm, isXummConnected, me } = useStateContext()
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [xummTxResponse, setXummTxResponse] = useState<XummTxResponse>()
@@ -29,7 +28,6 @@ function Mint(): JSX.Element {
   const [tokenMetadata, setTokenMetadata] = useState<TokenMetadata | null>(null)
   const [client, setClient] = useState<Client>(new Client(network))
   const [wallet, setWallet] = useState<Wallet | null>(null)
-  const [me, setMe] = useState<ResolvedFlow['me'] | null>(null)
   const [loading, setLoading] = useState<boolean>(false)
   const navigate = useNavigate()
 
@@ -56,15 +54,6 @@ function Mint(): JSX.Element {
         setWallet(wallet)
       } catch (error) {
         console.error(error)
-      }
-    }
-  }
-
-  async function getMe(): Promise<void> {
-    if (isXummConnected) {
-      const xummRes = await xumm.state()
-      if (xummRes) {
-        setMe(xummRes.me)
       }
     }
   }
@@ -118,7 +107,6 @@ function Mint(): JSX.Element {
 
   useEffect(() => {
     getMetadata()
-    getMe()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
