@@ -172,7 +172,7 @@ function Mint(): JSX.Element {
               {en.mint.walletAddress} {wallet.address}
             </Text>
           ) : null}
-          {me ? (
+          {isXummConnected && me ? (
             <Text>
               {en.mint.walletAddress} {me.account}
             </Text>
@@ -213,7 +213,10 @@ function Mint(): JSX.Element {
             </Box>
           ) : null}
           {tokenMetadata ? (
-            <Box>
+            <Box direction="column" gap="small">
+              <Box>
+                <Text>{en.mint.metadataInfo}</Text>
+              </Box>
               <Box border>
                 <Image src={tokenMetadata.image} />
               </Box>

@@ -13,8 +13,7 @@ function AppHeader(): JSX.Element {
 
   async function signIntoXUMM(): Promise<void> {
     try {
-      const authorized = await xumm.authorize()
-      console.log('User info', authorized?.me)
+      await xumm.authorize()
     } catch (error) {
       if (error instanceof Error) {
         window.alert(error.message)

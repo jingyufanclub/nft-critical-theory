@@ -59,6 +59,7 @@ export default {
     xummReject: 'The sign request was rejected.',
     xummError: 'An error has occurred.',
     newMint: 'Make another NFT!',
+    metadataInfo: 'Metadata uploaded to NFTStorage:',
   },
   xumm: {
     connect: 'Connect Xumm',

@@ -33,6 +33,12 @@ const defaultStateContext: StateContextType = {
   updateIsXummConnected: () => {},
 }
 
+export type ExtendedResolvedFlow = ResolvedFlow & {
+  me: {
+    networkType: keyof typeof Network
+  }
+}
+
 const StateContext = createContext<StateContextType>(defaultStateContext)
 
 function StateProvider({ children }: { children: JSX.Element }) {
@@ -42,8 +48,7 @@ function StateProvider({ children }: { children: JSX.Element }) {
   const [text, setText] = useState<string>('')
   const [xumm] = useState<XummPkce>(new XummPkce('c6f8ad59-180f-47c1-8c87-2eaf9b8cca26'))
   const [isXummConnected, setIsXummConnected] = useState<boolean>(false)
-
-  const [me, setMe] = useState<ResolvedFlow['me'] | null>(null)
+  const [me, setMe] = useState<ExtendedResolvedFlow['me'] | null>(null)
 
   useEffect(() => {
     getMe()
@@ -52,8 +57,9 @@ function StateProvider({ children }: { children: JSX.Element }) {
 
   async function getMe(): Promise<void> {
     if (isXummConnected) {
-      const xummRes = await xumm.state()
+      const xummRes = (await xumm.state()) as ExtendedResolvedFlow
       if (xummRes) {
+        setNetwork(Network[xummRes.me.networkType])
         setMe(xummRes.me)
       }
     }
