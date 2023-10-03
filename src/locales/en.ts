@@ -42,7 +42,7 @@ export default {
     instructions: 'Connect a Xumm wallet or enter an XRP Wallet seed to mint from your wallet.',
     instructions2: "Review your NFT's other attributes. We've defaulted to the standard ones.",
     walletSeed: 'Wallet seed',
-    walletSeedInfo: 'Enter your wallet family seed',
+    walletSeedInfo: 'Add your wallet family seed',
     walletAddress: 'Wallet Address',
     flags: 'Flags',
     flagsInfo: '1 Burnable by issuer, 2 Only XRP, 8 Transferable',
@@ -59,6 +59,7 @@ export default {
     xummReject: 'The sign request was rejected.',
     xummError: 'An error has occurred.',
     newMint: 'Make another NFT!',
+    metadataInfo: 'The following metadata has been successfully uploaded to NFTStorage:',
   },
   xumm: {
     connect: 'Connect Xumm',

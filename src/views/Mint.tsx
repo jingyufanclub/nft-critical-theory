@@ -19,7 +19,7 @@ const defaultFields: TransactionFields = {
 }
 
 function Mint(): JSX.Element {
-  const { metadataCid, network, svgData, xumm, isXummConnected } = useStateContext()
+  const { metadataCid, network, svgData, xumm, isXummConnected, me } = useStateContext()
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [xummTxResponse, setXummTxResponse] = useState<XummTxResponse>()
@@ -115,7 +115,7 @@ function Mint(): JSX.Element {
       <PageHeader title={en.mint.pageTitle} />
       <Box direction="row" gap="xlarge" wrap>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
-          {!isXummConnected && (
+          {!isXummConnected ? (
             <Box width="medium" direction="row" gap="small" align="center" round="4px">
               <TextInput
                 value={walletSeed}
@@ -130,7 +130,7 @@ function Mint(): JSX.Element {
                 onClick={() => setReveal(!reveal)}
               />
             </Box>
-          )}
+          ) : null}
           <Form
             value={txFields}
             onChange={(nextValue) => setTxFields(nextValue)}
@@ -167,12 +167,17 @@ function Mint(): JSX.Element {
           </Box>
         </Box>
         <Box width="medium" gap="medium" margin={{ bottom: 'medium' }}>
-          {wallet && (
+          {wallet && !isXummConnected ? (
             <Text>
               {en.mint.walletAddress} {wallet.address}
             </Text>
-          )}
-          {txResponse && (
+          ) : null}
+          {isXummConnected && me ? (
+            <Text>
+              {en.mint.walletAddress} {me.account}
+            </Text>
+          ) : null}
+          {txResponse ? (
             <Box direction="column">
               <Text>{en.mint.success}</Text>
               <Box direction="row" align="center" gap="xsmall">
@@ -184,36 +189,44 @@ function Mint(): JSX.Element {
                 <ShareRounded color="brand" size="small" />
               </Box>
             </Box>
-          )}
-          {txResponse && (
-            <Box gap="medium">
-              <Button label={en.mint.newMint} onClick={handleNavigate} />
-            </Box>
-          )}
+          ) : null}
           {xummTxResponse?.success ? (
-            <Box>
+            <Box direction="column">
               <Text>{en.mint.xummSuccess}</Text>
-              <Text>
-                {en.mint.txId}: {xummTxResponse.message}
-              </Text>
+              <Box direction="row" align="center" gap="xsmall">
+                <AnchorLink
+                  to={`${bithompBaseUrl[network]}/explorer/${xummTxResponse.message}`}
+                  label={en.mint.successView}
+                  target="_blank"
+                />
+                <ShareRounded color="brand" size="small" />
+              </Box>
             </Box>
           ) : (
             <Box>
               <Text>{xummTxResponse?.message}</Text>
             </Box>
           )}
-          {tokenMetadata && (
-            <Box>
+          {txResponse || xummTxResponse?.success ? (
+            <Box gap="medium">
+              <Button label={en.mint.newMint} onClick={handleNavigate} />
+            </Box>
+          ) : null}
+          {tokenMetadata ? (
+            <Box direction="column" gap="small">
+              <Box>
+                <Text>{en.mint.metadataInfo}</Text>
+              </Box>
               <Box border>
                 <Image src={tokenMetadata.image} />
               </Box>
               <JSONPretty data={tokenMetadata} />
             </Box>
-          )}
+          ) : null}
         </Box>
       </Box>
 
-      {loading && <Loading />}
+      {loading ? <Loading /> : null}
     </Page>
   )
 }
