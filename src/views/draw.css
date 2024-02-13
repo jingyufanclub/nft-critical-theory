@@ -1,0 +1,11 @@
+.toggle-box {
+  span {
+    color: white;
+    background-color: red;
+    font-family: Futura, Trebuchet MS, Arial, sans-serif;
+    font-style: oblique;
+    font-weight: 800;
+    width: 160px;
+    text-align: center;
+  }
+}

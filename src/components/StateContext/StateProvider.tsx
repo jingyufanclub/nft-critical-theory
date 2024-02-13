@@ -1,12 +1,14 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { Network } from 'common/constants'
+import { CanvasStyle } from 'common/entities'
+import { DEFAULT_STYLE, Network } from 'common/constants'
 import { ResolvedFlow, XummPkce } from 'xumm-oauth2-pkce'
 
 type StateContextType = {
   metadataCid: string
   svgData: string
   text: string
+  canvasStyle: CanvasStyle
   network: Network
   xumm: XummPkce
   isXummConnected: boolean
@@ -16,12 +18,14 @@ type StateContextType = {
   updateSvgData: (value: string) => void
   updateText: (value: string) => void
   updateIsXummConnected: (value: boolean) => void
+  updateCanvasStyle: (value: CanvasStyle) => void
 }
 
 const defaultStateContext: StateContextType = {
   metadataCid: '',
   svgData: '',
   text: '',
+  canvasStyle: DEFAULT_STYLE,
   network: Network.TESTNET,
   xumm: new XummPkce('c6f8ad59-180f-47c1-8c87-2eaf9b8cca26'),
   isXummConnected: false,
@@ -31,6 +35,7 @@ const defaultStateContext: StateContextType = {
   updateSvgData: () => {},
   updateText: () => {},
   updateIsXummConnected: () => {},
+  updateCanvasStyle: () => {},
 }
 
 export type ExtendedResolvedFlow = ResolvedFlow & {
@@ -46,6 +51,7 @@ function StateProvider({ children }: { children: JSX.Element }) {
   const [network, setNetwork] = useState<Network>(Network.TESTNET)
   const [svgData, setSvg] = useState<string>('')
   const [text, setText] = useState<string>('')
+  const [canvasStyle, setCanvasStyle] = useState<CanvasStyle>(DEFAULT_STYLE)
   const [xumm] = useState<XummPkce>(new XummPkce('c6f8ad59-180f-47c1-8c87-2eaf9b8cca26'))
   const [isXummConnected, setIsXummConnected] = useState<boolean>(false)
   const [me, setMe] = useState<ExtendedResolvedFlow['me'] | null>(null)
@@ -85,11 +91,16 @@ function StateProvider({ children }: { children: JSX.Element }) {
     setIsXummConnected(value)
   }
 
+  function updateCanvasStyle(value: CanvasStyle): void {
+    setCanvasStyle(value)
+  }
+
   const value = {
     metadataCid,
     network,
     svgData,
     text,
+    canvasStyle,
     xumm,
     isXummConnected,
     me,
@@ -97,6 +108,7 @@ function StateProvider({ children }: { children: JSX.Element }) {
     updateNetwork,
     updateSvgData,
     updateText,
+    updateCanvasStyle,
     updateIsXummConnected,
   }
 

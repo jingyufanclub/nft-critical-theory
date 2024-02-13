@@ -1,24 +1,32 @@
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { useStateContext } from 'components'
-import { Box, Button, Page, PageHeader, Text, TextInput } from 'grommet'
+import { Box, Button, CheckBox, Page, PageHeader, Text, TextInput } from 'grommet'
+import { useEffect, useState } from 'react'
 
-import { Canvas } from 'components'
 import { en } from 'locales'
+import { Canvas, useStateContext } from 'components'
+import { DEFAULT_STYLE, KRUGER_STYLE } from 'common/constants'
+
+import './draw.css'
 
 function Draw(): JSX.Element {
   const navigate = useNavigate()
-  const { updateSvgData, updateText } = useStateContext()
-  const [bg] = useState<string>('black')
-  const [fontFill] = useState<string>('white')
+  const { canvasStyle, updateCanvasStyle, updateSvgData, updateText } = useStateContext()
+  const [checked, setChecked] = useState<boolean>(false)
+  const [inputValue, setInputValue] = useState<string>('')
+  const [texts, setTexts] = useState<string[]>([])
+
   const [fontSize] = useState<number>(50)
   const [fontWeight] = useState<number>(400)
   const [textAlign] = useState<string>('center')
   const [textAnchor] = useState<string>(textAlign === 'center' ? 'middle' : 'start')
-  const [texts, setTexts] = useState<string[]>([])
-  const [inputValue, setInputValue] = useState<string>('')
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600"><style>.base { fill: ${fontFill}; font-family:sans-serif; font-size: ${fontSize}px; font-weight: ${fontWeight}; }</style><rect width="100%" height="100%" fill="${bg}" />${generateText()}</svg>`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600"><style>.base { fill: ${
+    canvasStyle.fontColor
+  }; font-family:${canvasStyle.fontFamily}; font-style: ${
+    canvasStyle.fontStyle
+  }; font-size: ${fontSize}px; font-weight: ${fontWeight}; }</style><rect width="100%" height="100%" fill="${
+    canvasStyle.bgColor
+  }" />${generateText()}</svg>`
 
   const svgData = `data:image/svg+xml;base64, ${window.btoa(unescape(encodeURIComponent(svg)))}`
 
@@ -51,6 +59,10 @@ function Draw(): JSX.Element {
     navigate('/metadata')
   }
 
+  useEffect(() => {
+    checked ? updateCanvasStyle(KRUGER_STYLE) : updateCanvasStyle(DEFAULT_STYLE)
+  }, [checked, updateCanvasStyle])
+
   return (
     <Page>
       <PageHeader title={en.draw.pageTitle} />
@@ -70,9 +82,12 @@ function Draw(): JSX.Element {
               <Button label={en.draw.resetButton} onClick={handleReset} />
             </Box>
           </Box>
+          <Box pad={{ vertical: 'medium' }} align="start" className="toggle-box">
+            <CheckBox name="style-toggle" label="KRUGER STYLE" onChange={(event) => setChecked(event.target.checked)} />
+          </Box>
         </Box>
         <Box direction="column" gap="medium">
-          <Box width="medium" border>
+          <Box width="medium" border={canvasStyle.name === 'default' ? true : false}>
             <Canvas svg={svg} />
           </Box>
           <Box align="center">
