@@ -21,7 +21,7 @@ export const bithompBaseUrl = {
 export const KRUGER_STYLE: CanvasStyle = {
   name: 'kruger',
   bgColor: 'red',
-  fontFamily: 'Futura,Trebuchet MS,Arial,sans-serif',
+  fontFamily: 'Futura, Trebuchet MS, sans-serif',
   fontStyle: 'oblique',
   fontColor: 'white',
 }
