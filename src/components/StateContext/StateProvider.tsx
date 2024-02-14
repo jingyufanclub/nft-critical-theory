@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
-import { CanvasStyle } from 'common/entities'
-import { DEFAULT_STYLE, Network } from 'common/constants'
+import { CANVAS_STYLES, DEFAULT_STYLE, Network } from 'common/constants'
+import { CanvasStyle, CanvasStyleName } from 'common/entities'
 import { ResolvedFlow, XummPkce } from 'xumm-oauth2-pkce'
 
 type StateContextType = {
@@ -18,7 +18,7 @@ type StateContextType = {
   updateSvgData: (value: string) => void
   updateText: (value: string) => void
   updateIsXummConnected: (value: boolean) => void
-  updateCanvasStyle: (value: CanvasStyle) => void
+  updateCanvasStyleName: (value: CanvasStyleName) => void
 }
 
 const defaultStateContext: StateContextType = {
@@ -35,7 +35,7 @@ const defaultStateContext: StateContextType = {
   updateSvgData: () => {},
   updateText: () => {},
   updateIsXummConnected: () => {},
-  updateCanvasStyle: () => {},
+  updateCanvasStyleName: () => {},
 }
 
 export type ExtendedResolvedFlow = ResolvedFlow & {
@@ -51,6 +51,7 @@ function StateProvider({ children }: { children: JSX.Element }) {
   const [network, setNetwork] = useState<Network>(Network.TESTNET)
   const [svgData, setSvg] = useState<string>('')
   const [text, setText] = useState<string>('')
+  const [canvasStyleName, setCanvasStyleName] = useState<CanvasStyleName>('default')
   const [canvasStyle, setCanvasStyle] = useState<CanvasStyle>(DEFAULT_STYLE)
   const [xumm] = useState<XummPkce>(new XummPkce('c6f8ad59-180f-47c1-8c87-2eaf9b8cca26'))
   const [isXummConnected, setIsXummConnected] = useState<boolean>(false)
@@ -60,6 +61,17 @@ function StateProvider({ children }: { children: JSX.Element }) {
     getMe()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isXummConnected])
+
+  useEffect(() => {
+    const name = getCanvasStyle(canvasStyleName)
+    if (name) {
+      setCanvasStyle(name)
+    }
+  }, [canvasStyleName])
+
+  function getCanvasStyle(name: CanvasStyleName) {
+    return CANVAS_STYLES.find((cs) => cs.name === name)
+  }
 
   async function getMe(): Promise<void> {
     if (isXummConnected) {
@@ -91,8 +103,8 @@ function StateProvider({ children }: { children: JSX.Element }) {
     setIsXummConnected(value)
   }
 
-  function updateCanvasStyle(value: CanvasStyle): void {
-    setCanvasStyle(value)
+  function updateCanvasStyleName(value: CanvasStyleName): void {
+    setCanvasStyleName(value)
   }
 
   const value = {
@@ -108,7 +120,7 @@ function StateProvider({ children }: { children: JSX.Element }) {
     updateNetwork,
     updateSvgData,
     updateText,
-    updateCanvasStyle,
+    updateCanvasStyleName,
     updateIsXummConnected,
   }
 

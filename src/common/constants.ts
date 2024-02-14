@@ -18,18 +18,35 @@ export const bithompBaseUrl = {
   [Network.TESTNET]: 'https://test.bithomp.com',
 }
 
-export const KRUGER_STYLE: CanvasStyle = {
-  name: 'kruger',
-  bgColor: 'red',
-  fontFamily: 'Futura, Trebuchet MS, sans-serif',
-  fontStyle: 'oblique',
-  fontColor: 'white',
-}
-
 export const DEFAULT_STYLE: CanvasStyle = {
   name: 'default',
   bgColor: 'black',
   fontFamily: 'Trebuchet MS, sans-serif',
   fontStyle: 'normal',
   fontColor: 'white',
+  fontSize: 50,
+  fontWeight: 400,
 }
+
+export const KRUGER_STYLE: CanvasStyle = {
+  name: 'kruger',
+  bgColor: 'red',
+  fontFamily: 'Futura, Tahoma, sans-serif',
+  fontStyle: 'oblique',
+  fontColor: 'white',
+  fontSize: 50,
+  fontWeight: 800,
+}
+
+export const WEINER_STYLE: CanvasStyle = {
+  name: 'weiner',
+  bgColor: 'white',
+  fontFamily: 'Arial Narrow, Arial, sans-serif',
+  fontStyle: 'normal',
+  fontColor: 'lime',
+  fontStroke: 'mediumblue',
+  fontSize: 60,
+  fontWeight: 600,
+}
+
+export const CANVAS_STYLES: CanvasStyle[] = [DEFAULT_STYLE, KRUGER_STYLE, WEINER_STYLE]

@@ -1,32 +1,36 @@
 import { useNavigate } from 'react-router-dom'
-import { Box, Button, CheckBox, Page, PageHeader, Text, TextInput } from 'grommet'
+import { Box, Button, Page, PageHeader, RadioButtonGroup, Text, TextInput } from 'grommet'
 import { useEffect, useState } from 'react'
 
 import { en } from 'locales'
 import { Canvas, useStateContext } from 'components'
-import { DEFAULT_STYLE, KRUGER_STYLE } from 'common/constants'
 
 import './draw.css'
+import { CanvasStyleName } from 'common/entities'
+
+const canvasStyleOptions: CanvasStyleName[] = ['default', 'kruger', 'weiner']
 
 function Draw(): JSX.Element {
   const navigate = useNavigate()
-  const { canvasStyle, updateCanvasStyle, updateSvgData, updateText } = useStateContext()
-  const [checked, setChecked] = useState<boolean>(false)
+  const { canvasStyle, updateCanvasStyleName, updateSvgData, updateText } = useStateContext()
+  const [styleOption, setStyleOption] = useState<CanvasStyleName>(canvasStyleOptions[0])
   const [inputValue, setInputValue] = useState<string>('')
   const [texts, setTexts] = useState<string[]>([])
 
-  const [fontSize] = useState<number>(50)
-  const [fontWeight] = useState<number>(400)
   const [textAlign] = useState<string>('center')
   const [textAnchor] = useState<string>(textAlign === 'center' ? 'middle' : 'start')
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600"><style>.base { fill: ${
     canvasStyle.fontColor
-  }; font-family:${canvasStyle.fontFamily}; font-style: ${
-    canvasStyle.fontStyle
-  }; font-size: ${fontSize}px; font-weight: ${fontWeight}; }</style><rect width="100%" height="100%" fill="${
-    canvasStyle.bgColor
-  }" />${generateText()}</svg>`
+  }; font-family:${canvasStyle.fontFamily}; font-style: ${canvasStyle.fontStyle}; font-size: ${
+    canvasStyle.fontSize
+  }px; font-weight: ${canvasStyle.fontWeight};
+    ${
+      canvasStyle.fontStroke
+        ? `paint-order: stroke; stroke: ${canvasStyle.fontStroke}; stroke-width: 5px; stroke-linecap: butt; stroke-linejoin: miter;`
+        : null
+    }
+  }</style><rect width="100%" height="100%" fill="${canvasStyle.bgColor}" />${generateText()}</svg>`
 
   const svgData = `data:image/svg+xml;base64, ${window.btoa(unescape(encodeURIComponent(svg)))}`
 
@@ -38,7 +42,7 @@ function Draw(): JSX.Element {
     let y = texts.length === 1 ? '50%' : 600 / (texts.length + 1) + texts.length * 24
     texts.forEach((t) => {
       textElements.push(`<text x="${x}" y="${y}" class="base" text-anchor="${textAnchor}" >${t}</text>`)
-      if (typeof y === 'number') y += fontSize + 10
+      if (typeof y === 'number') y += canvasStyle.fontSize + 10
     })
     return textElements.join('')
   }
@@ -60,8 +64,8 @@ function Draw(): JSX.Element {
   }
 
   useEffect(() => {
-    checked ? updateCanvasStyle(KRUGER_STYLE) : updateCanvasStyle(DEFAULT_STYLE)
-  }, [checked, updateCanvasStyle])
+    updateCanvasStyleName(styleOption)
+  }, [styleOption, updateCanvasStyleName])
 
   return (
     <Page>
@@ -82,8 +86,13 @@ function Draw(): JSX.Element {
               <Button label={en.draw.resetButton} onClick={handleReset} />
             </Box>
           </Box>
-          <Box pad={{ vertical: 'medium' }} align="start" className="toggle-box">
-            <CheckBox name="style-toggle" label="KRUGER STYLE" onChange={(event) => setChecked(event.target.checked)} />
+          <Box pad={{ vertical: 'medium' }} align="start" className="canvas-style-radio-group">
+            <RadioButtonGroup
+              name="canvas-style-selection"
+              options={canvasStyleOptions}
+              value={styleOption}
+              onChange={(event) => setStyleOption(event.target.value as CanvasStyleName)}
+            />
           </Box>
         </Box>
         <Box direction="column" gap="medium">

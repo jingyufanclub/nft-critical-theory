@@ -17,7 +17,7 @@ export interface TransactionFields {
   taxon: number
 }
 
-export type CanvasStyleName = 'default' | 'kruger'
+export type CanvasStyleName = 'default' | 'kruger' | 'weiner'
 
 export interface CanvasStyle {
   name: CanvasStyleName
@@ -25,4 +25,7 @@ export interface CanvasStyle {
   fontFamily: string
   fontStyle: string
   fontColor: string
+  fontSize: number
+  fontWeight: number
+  fontStroke?: string
 }
