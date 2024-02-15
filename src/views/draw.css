@@ -1,0 +1,28 @@
+.canvas-style-radio-group {
+  span {
+    width: 160px;
+    text-align: center;
+    text-transform: capitalize;
+  }
+
+  label:nth-of-type(2) {
+    span {
+      color: white;
+      background-color: red;
+      font-family: Futura, Tahoma, sans-serif;
+      font-style: oblique;
+      font-weight: 800;
+    }
+  }
+
+  label:nth-of-type(3) {
+    span {
+      background-color: white;
+      font-family: 'Arial Narrow', Arial, sans-serif;
+      font-weight: 800;
+      -webkit-text-fill-color: limegreen;
+      -webkit-text-stroke-color: mediumblue;
+      -webkit-text-stroke-width: 1px;
+    }
+  }
+}

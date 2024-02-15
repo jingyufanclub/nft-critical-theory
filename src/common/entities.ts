@@ -16,3 +16,16 @@ export interface TransactionFields {
   transferFee: number
   taxon: number
 }
+
+export type CanvasStyleName = 'default' | 'kruger' | 'weiner'
+
+export interface CanvasStyle {
+  name: CanvasStyleName
+  bgColor: string
+  fontFamily: string
+  fontStyle: string
+  fontColor: string
+  fontSize: number
+  fontWeight: number
+  fontStroke?: string
+}

@@ -1,24 +1,36 @@
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { useStateContext } from 'components'
-import { Box, Button, Page, PageHeader, Text, TextInput } from 'grommet'
+import { Box, Button, Page, PageHeader, RadioButtonGroup, Text, TextInput } from 'grommet'
+import { useEffect, useState } from 'react'
 
-import { Canvas } from 'components'
 import { en } from 'locales'
+import { Canvas, useStateContext } from 'components'
+
+import './draw.css'
+import { CanvasStyleName } from 'common/entities'
+
+const canvasStyleOptions: CanvasStyleName[] = ['default', 'kruger', 'weiner']
 
 function Draw(): JSX.Element {
   const navigate = useNavigate()
-  const { updateSvgData, updateText } = useStateContext()
-  const [bg] = useState<string>('black')
-  const [fontFill] = useState<string>('white')
-  const [fontSize] = useState<number>(50)
-  const [fontWeight] = useState<number>(400)
+  const { canvasStyle, updateCanvasStyleName, updateSvgData, updateText } = useStateContext()
+  const [styleOption, setStyleOption] = useState<CanvasStyleName>(canvasStyleOptions[0])
+  const [inputValue, setInputValue] = useState<string>('')
+  const [texts, setTexts] = useState<string[]>([])
+
   const [textAlign] = useState<string>('center')
   const [textAnchor] = useState<string>(textAlign === 'center' ? 'middle' : 'start')
-  const [texts, setTexts] = useState<string[]>([])
-  const [inputValue, setInputValue] = useState<string>('')
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600"><style>.base { fill: ${fontFill}; font-family:sans-serif; font-size: ${fontSize}px; font-weight: ${fontWeight}; }</style><rect width="100%" height="100%" fill="${bg}" />${generateText()}</svg>`
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 600 600"><style>.base { fill: ${
+    canvasStyle.fontColor
+  }; font-family:${canvasStyle.fontFamily}; font-style: ${canvasStyle.fontStyle}; font-size: ${
+    canvasStyle.fontSize
+  }px; font-weight: ${canvasStyle.fontWeight};
+    ${
+      canvasStyle.fontStroke
+        ? `paint-order: stroke; stroke: ${canvasStyle.fontStroke}; stroke-width: 5px; stroke-linecap: butt; stroke-linejoin: miter;`
+        : null
+    }
+  }</style><rect width="100%" height="100%" fill="${canvasStyle.bgColor}" />${generateText()}</svg>`
 
   const svgData = `data:image/svg+xml;base64, ${window.btoa(unescape(encodeURIComponent(svg)))}`
 
@@ -30,7 +42,7 @@ function Draw(): JSX.Element {
     let y = texts.length === 1 ? '50%' : 600 / (texts.length + 1) + texts.length * 24
     texts.forEach((t) => {
       textElements.push(`<text x="${x}" y="${y}" class="base" text-anchor="${textAnchor}" >${t}</text>`)
-      if (typeof y === 'number') y += fontSize + 10
+      if (typeof y === 'number') y += canvasStyle.fontSize + 10
     })
     return textElements.join('')
   }
@@ -51,6 +63,10 @@ function Draw(): JSX.Element {
     navigate('/metadata')
   }
 
+  useEffect(() => {
+    updateCanvasStyleName(styleOption)
+  }, [styleOption, updateCanvasStyleName])
+
   return (
     <Page>
       <PageHeader title={en.draw.pageTitle} />
@@ -70,9 +86,17 @@ function Draw(): JSX.Element {
               <Button label={en.draw.resetButton} onClick={handleReset} />
             </Box>
           </Box>
+          <Box pad={{ vertical: 'medium' }} align="start" className="canvas-style-radio-group">
+            <RadioButtonGroup
+              name="canvas-style-selection"
+              options={canvasStyleOptions}
+              value={styleOption}
+              onChange={(event) => setStyleOption(event.target.value as CanvasStyleName)}
+            />
+          </Box>
         </Box>
         <Box direction="column" gap="medium">
-          <Box width="medium" border>
+          <Box width="medium" border={canvasStyle.name === 'default' ? true : false}>
             <Canvas svg={svg} />
           </Box>
           <Box align="center">

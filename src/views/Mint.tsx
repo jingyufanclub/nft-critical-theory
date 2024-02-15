@@ -19,7 +19,7 @@ const defaultFields: TransactionFields = {
 }
 
 function Mint(): JSX.Element {
-  const { metadataCid, network, svgData, xumm, isXummConnected, me } = useStateContext()
+  const { metadataCid, network, svgData, xumm, isXummConnected, me, canvasStyle } = useStateContext()
   const [txFields, setTxFields] = useState<TransactionFields>(defaultFields)
   const [txResponse, setTxResponse] = useState<TxResponse | null>(null)
   const [xummTxResponse, setXummTxResponse] = useState<XummTxResponse>()
@@ -217,7 +217,7 @@ function Mint(): JSX.Element {
               <Box>
                 <Text>{en.mint.metadataInfo}</Text>
               </Box>
-              <Box border>
+              <Box border={canvasStyle.name === 'default' ? true : false}>
                 <Image src={tokenMetadata.image} />
               </Box>
               <JSONPretty data={tokenMetadata} />
